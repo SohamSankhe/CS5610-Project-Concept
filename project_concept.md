@@ -1,6 +1,6 @@
 # Project Concept for Generic Scrabble
 
-##### Authors:  Soham Sankhe, Yijia Hao
+#### Authors:  Soham Sankhe, Yijia Hao
 &nbsp;
 ### What game are you going to build?
 
@@ -49,7 +49,8 @@ player's rack are used up
 The winner with his/her total score shows up on the screen.
 
 
-### Is there any game functionality that you’d like to include but may need to cut </br>if you run out of time?
+### Is there any game functionality that you’d like to include but may need to cut </br>
+if you run out of time?
 
 We would like to cut back on the blank tile feature if we run out of time. 
 A blank tile can be converted into any letter tile to suit creating a word.
