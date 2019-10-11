@@ -2,6 +2,7 @@
 
 #### Authors:  Soham Sankhe, Yijia Hao
 &nbsp;
+
 **What game are you going to build?**
 
 Our team plans to build a generic two-player Scrabble Game. Similar to the 
