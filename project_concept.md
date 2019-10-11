@@ -1,7 +1,7 @@
 # Project Concept for Generic Scrabble
 
 #### Authors:  Soham Sankhe, Yijia Hao
-&nbsp;
+
 **What game are you going to build?**
 
 Our team plans to build a generic two-player Scrabble Game. Similar to the 
@@ -42,10 +42,10 @@ If any player uses all of the 7 tiles in one round, he/she will get extra 50
 points. 
 
 A player wins if the below conditions are satisfied:
-* Other player gives up
+* Other player gives up </br>
 OR
 * Has a higher score after all the replacement tiles and the ones in the 
-player's rack are used up
+player's rack are used up</br>
 
 The winner with his/her total score shows up on the screen.
 
