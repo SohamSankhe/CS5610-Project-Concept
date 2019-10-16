@@ -17,6 +17,8 @@ defmodule ScrabbleWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/games/:name", PageController, :game
+    post "/redirectToGame", PageController, :redirectToGame
   end
 
   # Other scopes may use custom stacks.

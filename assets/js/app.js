@@ -15,13 +15,18 @@ import $ from "jquery";
 // Import local files
 //
 // Local files can be imported directly using relative paths, for example:
-// import socket from "./socket"
+import socket from "./socket"
 import scrabble_init from "./genericScrabble";
 
 // Ref: http://www.ccs.neu.edu/home/ntuck/courses/2019/09/cs5610/notes/05-react/notes.html
-$(
-	() => { 
-		let root = $('#root')[0];
-		scrabble_init(root);
+function start()
+{
+	let root = document.getElementById('root');
+	if (root) 
+	{
+    		let channel = socket.channel("games:" + window.gameName, {});
+    		scrabble_init(root, channel);
 	}
-);
+}
+
+$(start);

@@ -3,6 +3,8 @@ defmodule ScrabbleWeb.UserSocket do
 
   ## Channels
   # channel "room:*", ScrabbleWeb.RoomChannel
+	
+  channel "games:*", ScrabbleWeb.GamesChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

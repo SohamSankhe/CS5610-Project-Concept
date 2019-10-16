@@ -9,9 +9,10 @@ defmodule Scrabble.Application do
     # List all child processes to be supervised
     children = [
       # Start the endpoint when the application starts
-      ScrabbleWeb.Endpoint
+      ScrabbleWeb.Endpoint,
       # Starts a worker by calling: Scrabble.Worker.start_link(arg)
       # {Scrabble.Worker, arg},
+      Scrabble.BackupAgent,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
