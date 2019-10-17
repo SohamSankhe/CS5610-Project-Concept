@@ -13,11 +13,12 @@ class GenericScrabble extends React.Component {
 
     this.state = {
     	board: [],
-      color: []
+      color: [],
+      rack1: [],
+      rack2: []
     };
 
-    this.channel
-        .join()
+    this.channel.join()
         .receive("ok", this.onJoin.bind(this))
 		    .receive("error", resp => { console.log("Unable to join", resp); });
   }
@@ -27,27 +28,24 @@ class GenericScrabble extends React.Component {
     this.setState(view.game);
   }
 
+  
+
   // Ref: https://stackoverflow.com/questions/22876978/loop-inside-react-jsx
   getTable()
   {
     let ctr = 0;
     let trs = [];
-
     for(let i = 0; i < 15; i++) // rows
     {
       let tds = [];
-
       for(let j = 0; j < 15; j++)
       {
           tds.push(<td>{this.getSquare(ctr)}</td>);
           ctr = ctr + 1;
       }
-
       trs.push(<tr>{tds}</tr>);
       //ctr = ctr + 1;
     }
-    console.log("ctr ", ctr);
-
     return trs;
   }
 
@@ -55,9 +53,16 @@ class GenericScrabble extends React.Component {
   {
     return(
         <div>
-          <table>
-            <tbody>{this.getTable()}</tbody>
-          </table>
+          <section className = "board">
+            <table>
+              <tbody>{this.getTable()}</tbody>
+            </table>
+          </section>
+          <section className="racks">
+          <h4>Player racks</h4>
+            {this.getRack(1)}
+            {this.getRack(2)}
+          </section>
         </div>
     );
   }
@@ -69,6 +74,40 @@ class GenericScrabble extends React.Component {
        color={this.state.color[i]}/>
     );
   }
+
+  getRack(i)
+  {
+    if(i == 1) // player 1 rack
+    {
+      return(
+        <Rack letters={this.state.rack1}/> //Todo : add play and clear buttons
+      );
+    }
+    else // player 2 rack
+    {
+      return(
+        <Rack letters = {this.state.rack2}/>
+      );
+    }
+  }
+}
+
+function Rack(props)
+{
+  let rackList = props.letters;
+  let tbl = [];
+  let trs = [];
+  let tds = [];
+
+  for(let i = 0; i < 7; i++)
+  {
+      tds.push(<td>
+          <button className = "rackButton">{rackList[i]}</button>
+        </td>);
+  }
+  trs.push(<tr>{tds}</tr>);
+  tbl.push(<table><tbody>{trs}</tbody></table>);
+  return tbl;
 }
 
 function Square(props)

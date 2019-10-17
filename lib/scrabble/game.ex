@@ -15,12 +15,17 @@ defmodule Scrabble.Game do
 	def new do
 		grid = Grid.getNewGrid()
 		clrLst = Grid.getColorList(grid)
+		tileList = Tiles.generateTileList()
+		{tileList, player1Rack} = Tiles.getTiles(tileList, 7)
+		{tileList, player2Rack} = Tiles.getTiles(tileList, 7)
 
 		%{
 			board: grid,
-			tiles: Tiles.generateTileList(),
-			# for client view, computed once per game
-			colorList: clrLst,
+			tiles: tileList,
+			rack1: player1Rack,
+			rack2: player2Rack,
+
+			colorList: clrLst, # for client view, computed once per game
 		}
 	end
 
@@ -32,6 +37,8 @@ defmodule Scrabble.Game do
 		%{
 			board: Grid.getClientBoard(game.board),
 			color: game.colorList,
+			rack1: game.rack1,
+			rack2: game.rack2, # TODO cant send both racks to one client
 		}
 	end
 
