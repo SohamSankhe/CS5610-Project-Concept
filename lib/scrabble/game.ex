@@ -1,6 +1,7 @@
 defmodule Scrabble.Game do
 
 	alias Scrabble.Grid
+	alias Scrabble.Tiles
 
 	# State:
 	# board: Key {x,y} -> {letter, bonus}
@@ -17,7 +18,7 @@ defmodule Scrabble.Game do
 
 		%{
 			board: grid,
-
+			tiles: Tiles.generateTileList(),
 			# for client view, computed once per game
 			colorList: clrLst,
 		}
