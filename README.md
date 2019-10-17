@@ -18,4 +18,9 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
   * Mailing list: http://groups.google.com/group/phoenix-talk
   * Source: https://github.com/phoenixframework/phoenix
   * Dictionary API: https://dictionaryapi.com/account/example?key=eefa30f1-c7f2-44e4-a14e-4d48da208517
+  * HTTPoison: https://hexdocs.pm/httpoison/HTTPoison.html#content
+  * other sources: https://medium.com/@a4word/oh-the-api-clients-youll-build-in-elixir-f9140e2acfb6
+  https://stackoverflow.com/questions/46633620/make-http-request-with-elixir-and-phoenix
+  https://github.com/edgurgel/httpoison
+  
   
