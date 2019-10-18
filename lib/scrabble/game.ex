@@ -26,6 +26,10 @@ defmodule Scrabble.Game do
 			rack2: player2Rack,
 
 			colorList: clrLst, # for client view, computed once per game
+
+			# Below added just for consistency betw server & client state (needed?)
+			# currentRackIndex: -1,
+			# indexesPlayed: [],
 		}
 	end
 
@@ -39,6 +43,11 @@ defmodule Scrabble.Game do
 			color: game.colorList,
 			rack1: game.rack1,
 			rack2: game.rack2, # TODO cant send both racks to one client
+
+			# Below added just for consistency betw server & client state (needed?)
+			currentRackIndex: -1,
+      rackIndPlayed: [],
+      boardIndPlayed: [],
 		}
 	end
 
