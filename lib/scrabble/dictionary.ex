@@ -16,4 +16,11 @@ defmodule DictionaryApi do
 
     false
   end
+
+  # Todo Yijia
+  # function that takes a list of words to check_word
+  # if any word is not correct stops checking and returns the [incorrect word]
+  # return empty list if all words are correct
+
+  
 end
