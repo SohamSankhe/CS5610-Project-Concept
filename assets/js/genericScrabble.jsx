@@ -26,10 +26,7 @@ class GenericScrabble extends React.Component {
 		    .receive("error", resp => { console.log("Unable to join", resp); });
   }
 
-  displayState()
-  {
-    console.log(this.state);
-  }
+  // Event handlers
 
   handleBoardClick(ev) // handle square comp click
   {
@@ -72,28 +69,26 @@ class GenericScrabble extends React.Component {
     this.setState(oldState => ({currentRackIndex : ind}));
   }
 
-  onJoin(view) {
-    console.log("new view", view);
-    this.setState(view.game);
+  handlePlayClick()
+  {
+    console.log("Player chooses to play");
+    // TODO: validate to prevent empty calls
+    this.channel.push("play", {board: this.state.board,
+      boardIndPlayed: this.state.boardIndPlayed,
+      rackIndPlayed: this.state.rackIndPlayed})
+  		.receive("ok", this.onUpdate.bind(this))
   }
 
-  // Ref: https://stackoverflow.com/questions/22876978/loop-inside-react-jsx
-  getTable()
+  handleClearClick()
   {
-    let ctr = 0;
-    let trs = [];
-    for(let i = 0; i < 15; i++) // rows
-    {
-      let tds = [];
-      for(let j = 0; j < 15; j++)
-      {
-          tds.push(<td>{this.getSquare(ctr)}</td>);
-          ctr = ctr + 1;
-      }
-      trs.push(<tr>{tds}</tr>);
-      //ctr = ctr + 1;
-    }
-    return trs;
+    console.log("Player chooses to clear");
+
+    this.setState(oldState => ({
+      board: oldState.board.map((item, index) =>
+          (oldState.boardIndPlayed.includes(index.toString())) ? "" : item
+        ),
+      boardIndPlayed: [], rackIndPlayed: [], currentRackIndex: -1
+    }));
   }
 
   render()
@@ -108,7 +103,10 @@ class GenericScrabble extends React.Component {
           <section className="racks">
           <h4>Player racks</h4>
             {this.getRack(1)}
-
+            <button className = "playButton"
+              onClick ={this.handlePlayClick.bind(this)}>Play</button>
+            <button className = "clearButton"
+              onClick ={this.handleClearClick.bind(this)}>Clear</button>
           </section>
         </div>
     );
@@ -145,6 +143,35 @@ class GenericScrabble extends React.Component {
       );
     }
   }
+
+  onJoin(view) {
+    console.log("new view", view);
+    this.setState(view.game);
+  }
+
+  // Ref: https://stackoverflow.com/questions/22876978/loop-inside-react-jsx
+  getTable()
+  {
+    let ctr = 0;
+    let trs = [];
+    for(let i = 0; i < 15; i++) // rows
+    {
+      let tds = [];
+      for(let j = 0; j < 15; j++)
+      {
+          tds.push(<td>{this.getSquare(ctr)}</td>);
+          ctr = ctr + 1;
+      }
+      trs.push(<tr>{tds}</tr>);
+      //ctr = ctr + 1;
+    }
+    return trs;
+  }
+
+  displayState()
+  {
+    console.log(this.state);
+  }
 }
 
 function Rack(props)
@@ -169,8 +196,6 @@ function Rack(props)
     {
       color = "green";
     }
-
-    console.log(i, " ", rackIndPlayed.includes(i));
 
     let butStyles = {
       backgroundColor: color
