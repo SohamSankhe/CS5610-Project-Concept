@@ -51,6 +51,18 @@ defmodule Scrabble.Game do
 		}
 	end
 
+	def play(game, board, boardIndPlayed, rackIndPlayed) do
+		# validate input
+		# convert board to x,y coord system
+		# validate if play is either horizontal or vertical
+		# find words
+		# check words
+		# calculate score
+		# refill rack
+		# send back
+		game
+	end
+
 	# Todo - Delete method and replace with something appr
 	def guess(game, letter) do
 		true

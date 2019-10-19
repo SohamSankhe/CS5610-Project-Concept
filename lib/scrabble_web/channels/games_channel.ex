@@ -26,11 +26,11 @@ defmodule ScrabbleWeb.GamesChannel do
   defp authorized?(_payload) do
     true
   end
-  
+
   # Todo Ref: Hangman example in class
   alias Scrabble.Game
   alias Scrabble.BackupAgent
-  
+
   def join("games:" <> name, payload, socket) do
     if authorized?(payload) do
       game = BackupAgent.get(name) || Game.new()
@@ -44,6 +44,7 @@ defmodule ScrabbleWeb.GamesChannel do
     end
   end
 
+  # TODO remove 
   def handle_in("guess", %{"letter" => ll}, socket) do
   	name = socket.assigns[:name]
   	{index, ""} = Integer.parse(ll)
@@ -52,5 +53,13 @@ defmodule ScrabbleWeb.GamesChannel do
     BackupAgent.put(name, game)
     {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
   end
-  
+
+  def handle_in("play", %{"board" => brd, "boardIndPlayed" => brdInd, "rackIndPlayed" => rckInd}, socket) do
+    name = socket.assigns[:name]
+    game = Game.play(socket.assigns[:game], brd, brdInd, rckInd)
+    socket = assign(socket, :game, game)
+    BackupAgent.put(name, game)
+    {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
+  end
+
 end
