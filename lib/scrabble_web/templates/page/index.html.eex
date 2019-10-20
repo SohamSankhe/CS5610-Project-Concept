@@ -1,11 +1,17 @@
-<div class="row">
-	<div class="column">
-		<h2>Generic Scrabble</h2>
-		<div class = "indexPage">
-    		<%= form_for @conn, "/redirectToGame", fn f -> %>
-      		<p>Enter a game name to join: <%= text_input f, :x %></p>
-      		<p><%= submit "Join" %></p>
-    		<% end %>
-		</div>
-	</div>
-</div>
+<!DOCTYPE html>
+<html>
+<head>
+<title>scrabble</title>
+<script>
+ window.gameName = "scrabble";
+</script>
+</head>
+<body>
+            <h2>Generic Scrabble</h2>
+            <div class = "indexPage">
+                <div id="index_root">
+                    <p>React app not loaded...</p>
+                </div>
+            </div>
+</body>
+</html>

@@ -17,7 +17,7 @@ defmodule ScrabbleWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    get "/games/:name", PageController, :game
+    get "/games/:name/:player", PageController, :game
     post "/redirectToGame", PageController, :redirectToGame
   end
 
