@@ -22,5 +22,6 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
   * other sources: https://medium.com/@a4word/oh-the-api-clients-youll-build-in-elixir-f9140e2acfb6
   https://stackoverflow.com/questions/46633620/make-http-request-with-elixir-and-phoenix
   https://github.com/edgurgel/httpoison
+  https://www.w3resource.com/javascript/form/letters-numbers-field.php
   
   
