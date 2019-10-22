@@ -19,6 +19,7 @@ class GenericScrabble extends React.Component {
       currentRackIndex: -1,
       rackIndPlayed: [],
       boardIndPlayed: [],
+      message: "",
     };
 
     this.channel.join()
@@ -149,6 +150,12 @@ class GenericScrabble extends React.Component {
     this.setState(view.game);
   }
 
+  onUpdate({game}){
+    console.log("On update")
+    console.log("new game", game)
+    this.setState(game);
+  }
+
   // Ref: https://stackoverflow.com/questions/22876978/loop-inside-react-jsx
   getTable()
   {
@@ -182,8 +189,6 @@ function Rack(props)
   let tbl = [];
   let trs = [];
   let tds = [];
-
-  console.log(rackIndPlayed);
 
   for(let i = 0; i < 7; i++)
   {

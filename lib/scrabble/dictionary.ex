@@ -22,5 +22,5 @@ defmodule DictionaryApi do
   # if any word is not correct stops checking and returns the [incorrect word]
   # return empty list if all words are correct
 
-  
+
 end

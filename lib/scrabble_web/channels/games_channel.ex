@@ -44,7 +44,7 @@ defmodule ScrabbleWeb.GamesChannel do
     end
   end
 
-  # TODO remove 
+  # TODO remove
   def handle_in("guess", %{"letter" => ll}, socket) do
   	name = socket.assigns[:name]
   	{index, ""} = Integer.parse(ll)
