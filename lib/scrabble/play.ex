@@ -2,43 +2,85 @@ defmodule Scrabble.Play do
   alias Scrabble.Grid
   alias Scrabble.ValidatePlay
   alias Scrabble.Words
+  alias Scrabble.Tiles
+  alias Scrabble.Score
 
   def processPlay(game, board, boardIndPlayed, rackIndPlayed) do
-    # validate input - ?
+    # 'board' arg contains board with the latest play on it
 
-		# convert client's single index input values to x,y coord system
+    # convert client's single index input values to x,y coord system
     updatedBoard = convertGridCoords(board)
     brdIndexes = Enum.map(boardIndPlayed, fn x -> convertToXY(getInt(x)) end)
+
+    # Validate input
     {valStatus, valMsg} = ValidatePlay.isPlayValid(game, updatedBoard, brdIndexes)
 
-    words = []
     if valStatus == :ok do
-      # if words are correct, add to Game
-      # else add incorrect words to 'words' list
-      # in below cond -> case 'words' length
-      words = Words.findWords(updatedBoard, brdIndexes)
-    end
+      # Identify words updated/created
+      wordCoords = Words.findWords(updatedBoard, brdIndexes)
 
-    cond do
-      # case for invalid placement
-      valStatus != :ok ->
-        game = Map.put(game, :message, valMsg)
-        game
-      # case for incorrect words - reset play and send message
-      # case for correct words - call fn that calc score and returns game
-      true ->
-        game = Map.put(game, :message, "")
-        game = Map.put(game, :board, updatedBoard)
-        game
+      # check correctness of words
+      {_, words, incorrectWords} = Words.checkWords(updatedBoard, wordCoords)
+      cond do
+        length(incorrectWords) > 0 ->
+            handleIncorrectWordPlay(game, incorrectWords)
+        true ->
+            handleCorrectWordPlay(game, updatedBoard, rackIndPlayed, brdIndexes,
+                words, wordCoords)
+      end
+    else
+      game = Map.put(game, :message, valMsg)
+      game
     end
-
-		# find words
-		# check words
-		# calculate score
-		# refill rack
-		# send back
   end
 
+  def handleCorrectWordPlay(game, updatedBoard, rackIndPlayed, boardIndPlayed,
+        words, wordCoords) do
+
+    # score game updatedboard boardindplayed wordCoords
+    #score = Score.calculateScore(game, updatedBoard, boardIndPlayed, wordCoords)
+    score = 0
+
+    # TODO Yijia - code to decide which rack and which score to be updated based
+    # on player
+    {remainingTiles, newRack} = updateRack(game, game.rack1, rackIndPlayed)
+
+    game = Map.put(game, :rack1, newRack)
+    game = Map.put(game, :tiles, remainingTiles)
+    game = Map.put(game, :board, updatedBoard)
+    game = Map.put(game, :words, words)
+    game = Map.put(game, :message, "")
+    game = Map.put(game, :lastScore1, score)
+    game = Map.put(game, :score1, game.score1 + score)
+    game
+  end
+
+  def handleIncorrectWordPlay(game, incorrectWords) do
+    incorrectWordStr = Enum.reduce(incorrectWords, "", fn y, acc -> "#{acc} #{y}" end)
+    msg = "Incorret words: " <> incorrectWordStr
+    game = Map.put(game, :message, msg)
+    game
+  end
+
+  # a player's rack and the indexes of tiles he has used
+  # replace those tiles in the rack from tiles.ex
+  def updateRack(game, rack, rackIndPlayed) do
+    rackIndPlayedInt = Enum.reduce(rackIndPlayed, [], fn x, acc ->
+      acc ++ [getInt(x)] end)
+    # remove played indexes
+    rackWithIndexes = Enum.with_index(rack)
+    updatedRack = Enum.reduce(rackWithIndexes, [], fn {val, index}, acc ->
+      if !Enum.member?(rackIndPlayedInt, index) do
+          acc ++ [val]
+      else
+          acc
+      end
+    end)
+
+    tilesReq = 7 - length(updatedRack)
+    {tileList, newRack} = Tiles.getTiles(game.tiles, tilesReq)
+    {tileList, newRack ++ updatedRack}
+  end
 
   # convert clients single index grid in x,y coord system
   def convertGridCoords(board) do
@@ -59,18 +101,8 @@ defmodule Scrabble.Play do
     {yCoord, xCoord}
   end
 
-
   def getInt(str) do
     {intVal, ""} = Integer.parse(str)
     intVal
   end
-
-  # find words created/updated
-  def findWords(board, boardIndPlayed) do
-
-  end
-
-
-
-
 end

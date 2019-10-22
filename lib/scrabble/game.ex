@@ -28,6 +28,11 @@ defmodule Scrabble.Game do
 
 			colorList: clrLst, # for client view, computed once per game
 			message: "",
+			words: [],
+			score1: 0,
+			score2: 0,
+			lastScore1: 0,
+			lastScore2: 0,
 			# Below added just for consistency betw server & client state (needed?)
 			# currentRackIndex: -1,
 			# indexesPlayed: [],
@@ -48,7 +53,12 @@ defmodule Scrabble.Game do
 			currentRackIndex: -1,
       rackIndPlayed: [],
       boardIndPlayed: [],
-			message: "",
+			message: game.message,
+			words: game.words,
+			score1: game.score1,
+			score2: game.score2,
+			lastScore1: game.lastScore1,
+			lastScore2: game.lastScore2,
 		}
 	end
 

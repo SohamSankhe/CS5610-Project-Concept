@@ -52,9 +52,6 @@ defmodule Scrabble.Words do
       end
     end)
 
-    IO.puts("Final word list")
-    IO.inspect wordList
-
     wordList
   end
 
@@ -116,6 +113,34 @@ defmodule Scrabble.Words do
     end
   end
 
+  # returns {:ok, correctWords}
+  #         {:error, incorrectWords}
+  def checkWords(board, wordList) do
+    # convert word coord list to actual words
+    wordsPlayed = convertToActualWord(board, wordList)
+    IO.puts("Words played:")
+    IO.inspect wordsPlayed
+
+    # verify correctness
+    incorrectWords = DictionaryApi.checkWords(wordsPlayed)
+    IO.puts("Incorrect words:")
+    IO.inspect incorrectWords
+
+    if length(incorrectWords) > 0 do
+      {:error, wordsPlayed, incorrectWords}
+    else
+      {:ok, wordsPlayed, []}
+    end
+  end
+
+
+  # https://stackoverflow.com/questions/44613261/elixir-how-to-convert-keyword-list-to-string
+  def convertToActualWord(board, wordList) do
+    letterList = Enum.map(wordList, fn x -> getLettersForCoordList(x, board) end)
+    wordList = Enum.reduce(letterList, [], fn ls, acc ->
+        acc ++ [Enum.reduce(ls, "", fn y, acc -> "#{acc}#{y}" end)]
+      end)
+  end
 
   def getLettersForCoordList(lst, board) do
     Enum.reduce(lst, [], fn {x,y}, acc ->

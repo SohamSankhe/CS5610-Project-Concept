@@ -5,22 +5,27 @@ defmodule DictionaryApi do
     response = HTTPoison.get!(url)
     req = Poison.decode!(response.body)
 
-    if req == [] do
-      false
+    cond do
+      req == [] -> false
+      is_map(hd(req)) -> true
+      true -> false
     end
 
-    [head | tail] = req
-    if is_map(head) do
-      true
-    end
-
-    false
   end
 
-  # Todo Yijia
-  # function that takes a list of words to check_word
-  # if any word is not correct stops checking and returns the [incorrect word]
-  # return empty list if all words are correct
-
+  # returns list if incorrect words, if any
+  def checkWords(wordList) do
+    incorrectWords = Enum.reduce(wordList, [], fn word, acc ->
+        if !check_word(word) do
+          acc ++ [word]
+        end
+    end)
+    
+    if incorrectWords == nil do
+      []
+    else
+      incorrectWords
+    end
+  end
 
 end

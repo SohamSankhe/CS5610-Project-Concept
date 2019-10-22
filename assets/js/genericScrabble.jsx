@@ -20,6 +20,11 @@ class GenericScrabble extends React.Component {
       rackIndPlayed: [],
       boardIndPlayed: [],
       message: "",
+      words: [],
+      score1: 0,
+			score2: 0,
+			lastScore1: 0,
+			lastScore2: 0
     };
 
     this.channel.join()
@@ -97,6 +102,7 @@ class GenericScrabble extends React.Component {
     return(
         <div>
           <section className = "board">
+            <h2>{this.state.message}</h2>
             <table>
               <tbody>{this.getTable()}</tbody>
             </table>
@@ -108,6 +114,16 @@ class GenericScrabble extends React.Component {
               onClick ={this.handlePlayClick.bind(this)}>Play</button>
             <button className = "clearButton"
               onClick ={this.handleClearClick.bind(this)}>Clear</button>
+          </section>
+          // TODO: make score comp
+          <section className = "score">
+            <h3>Score:</h3>
+            <span><h4>Player 1: {this.state.score1}</h4></span>
+            <span><h4>Player 2: {this.state.score2}</h4></span>
+          </section>
+          <section>
+          <h3>Words Played:</h3>
+          <h4>{this.state.words}</h4>
           </section>
         </div>
     );
@@ -173,6 +189,17 @@ class GenericScrabble extends React.Component {
       //ctr = ctr + 1;
     }
     return trs;
+  }
+
+  getMessage()
+  {
+    msg = this.state.message;
+    msgDisplay = [];
+    if(msg != "")
+    {
+      msgDisplay.push(<p>{msg}</p>);
+    }
+    return msgDisplay;
   }
 
   displayState()
