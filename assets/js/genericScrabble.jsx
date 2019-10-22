@@ -14,8 +14,7 @@ class GenericScrabble extends React.Component {
     this.state = {
     	board: [],
       color: [],
-      rack1: [],
-      rack2: [],
+      rack: [],
       currentRackIndex: -1,
       rackIndPlayed: [],
       boardIndPlayed: [],
@@ -41,7 +40,7 @@ class GenericScrabble extends React.Component {
       return; // nothing selected
     }
 
-    var rackValue = this.state.rack1[this.state.currentRackIndex];
+    var rackValue = this.state.rack[this.state.currentRackIndex];
     var newRackIndPlayedList = this.state.rackIndPlayed.slice();
     newRackIndPlayedList.push(this.state.currentRackIndex);
     var newBoardIndPlayedList = this.state.boardIndPlayed.slice();
@@ -61,7 +60,7 @@ class GenericScrabble extends React.Component {
   {
     var ind = ev.target.value;
     console.log("Rack Index ", ind, " Value: ",
-      this.state.rack1[ind]);
+      this.state.rack[ind]);
     if(this.state.rackIndPlayed.includes(ind.toString()))
     {
       return; // already played
@@ -102,7 +101,7 @@ class GenericScrabble extends React.Component {
           </section>
           <section className="racks">
           <h4>Player racks</h4>
-            {this.getRack(1)}
+            {this.getRack()}
             <button className = "playButton"
               onClick ={this.handlePlayClick.bind(this)}>Play</button>
             <button className = "clearButton"
@@ -122,26 +121,14 @@ class GenericScrabble extends React.Component {
     );
   }
 
-  getRack(i)
+  getRack()
   {
-    if(i == 1) // player 1 rack
-    {
-      return(
-        <Rack letters={this.state.rack1}  //Todo : add play and clear buttons
-          onClick = {this.handleRackClick.bind(this)}
-          currentRackIndex = {this.state.currentRackIndex}
-          rackIndPlayed = {this.state.rackIndPlayed}/>
-      );
-    }
-    else // player 2 rack
-    {
-      return(
-        <Rack letters = {this.state.rack2}
-          onClick = {this.handleRackClick.bind(this)}
-          currentRackIndex = {this.state.currentRackIndex}
-          rackIndPlayed = {this.state.rackIndPlayed}/>
-      );
-    }
+    return(
+        <Rack letters={this.state.rack}  //Todo : add play and clear buttons
+              onClick = {this.handleRackClick.bind(this)}
+              currentRackIndex = {this.state.currentRackIndex}
+              rackIndPlayed = {this.state.rackIndPlayed}/>
+    );
   }
 
   onJoin(view) {

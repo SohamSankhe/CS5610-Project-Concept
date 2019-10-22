@@ -41,13 +41,12 @@ defmodule Scrabble.Game do
 		%{
 			board: Grid.getClientBoard(game.board),
 			color: game.colorList,
-			rack1: game.rack1,
-			rack2: game.rack2, # TODO cant send both racks to one client
+            rack: game.rack,
 
 			# Below added just for consistency betw server & client state (needed?)
 			currentRackIndex: -1,
-      rackIndPlayed: [],
-      boardIndPlayed: [],
+            rackIndPlayed: [],
+            boardIndPlayed: [],
 		}
 	end
 
@@ -68,5 +67,12 @@ defmodule Scrabble.Game do
 		true
 	end
 
+    def check_player(player, game) do
+      if player == "player1" do
+        rack = game.rack1
+      else
+        rack = game.rack2
+      end
+    end
 
 end

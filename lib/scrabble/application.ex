@@ -13,6 +13,7 @@ defmodule Scrabble.Application do
       # Starts a worker by calling: Scrabble.Worker.start_link(arg)
       # {Scrabble.Worker, arg},
       Scrabble.BackupAgent,
+      Scrabble.GameSup
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

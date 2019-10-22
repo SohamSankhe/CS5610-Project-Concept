@@ -1,28 +1,7 @@
 defmodule ScrabbleWeb.GamesChannel do
   use ScrabbleWeb, :channel
 
-  #def join("games:lobby", payload, socket) do
-  #  if authorized?(payload) do
-  #    {:ok, socket}
-  #  else
-  #    {:error, %{reason: "unauthorized"}}
-  #  end
-  #end
 
-  # Channels can be used in a request/response fashion
-  # by sending replies to requests from the client
-  #def handle_in("ping", payload, socket) do
-  #  {:reply, {:ok, payload}, socket}
-  #end
-
-  # It is also common to receive messages from the client and
-  # broadcast to everyone in the current topic (games:lobby).
-  #def handle_in("shout", payload, socket) do
-  #  broadcast socket, "shout", payload
-  #  {:noreply, socket}
-  #end
-
-  # Add authorization logic here as required.
   defp authorized?(_payload) do
     true
   end
@@ -30,19 +9,32 @@ defmodule ScrabbleWeb.GamesChannel do
   # Todo Ref: Hangman example in class
   alias Scrabble.Game
   alias Scrabble.BackupAgent
+  alias Scrabble.GameServer
 
-  def join("games:" <> name, payload, socket) do
+  def join("games:" <> name_player, payload, socket) do
     if authorized?(payload) do
-      game = BackupAgent.get(name) || Game.new()
-      socket = socket
-      |> assign(:game, game)
-      |> assign(:name, name)
+      name_player = String.split(name_player, ",")
+      name = List.first(name_player)
+      IO.inspect(name)
+      player = List.last(name_player)
+      IO.inspect(player)
+      game = BackupAgent.get(name)|| Game.new()
       BackupAgent.put(name, game)
+      rack = Game.check_player(player, game)
+      game = game
+      |> Map.delete(:rack1)
+      |> Map.delete(:rack2)
+      |> Map.put_new(:rack, rack)
+      socket = socket
+      |> assign(:rack, rack)
+      GameServer.start(name)
       {:ok, %{"join" => name, "game" => Game.client_view(game)}, socket}
     else
       {:error, %{reason: "unauthorized"}}
     end
   end
+
+
 
   # TODO remove 
   def handle_in("guess", %{"letter" => ll}, socket) do
