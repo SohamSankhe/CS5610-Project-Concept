@@ -27,6 +27,8 @@ defmodule ScrabbleWeb.GamesChannel do
       |> Map.put_new(:rack, rack)
       socket = socket
       |> assign(:rack, rack)
+      |> assign(:player, player)
+      |> assign(:name, name)
       GameServer.start(name)
       {:ok, %{"join" => name, "game" => Game.client_view(game)}, socket}
     else

@@ -12,12 +12,18 @@ class GenericScrabble extends React.Component {
     this.channel = props.channel;
 
     this.state = {
-    	board: [],
+      board: [],
       color: [],
       rack: [],
       currentRackIndex: -1,
       rackIndPlayed: [],
       boardIndPlayed: [],
+      message: "",
+      words: [],
+      score1: 0,
+      score2: 0,
+      lastScore1: 0,
+      lastScore2: 0
     };
 
     this.channel.join()
@@ -71,6 +77,7 @@ class GenericScrabble extends React.Component {
   handlePlayClick()
   {
     console.log("Player chooses to play");
+    this.displayState();
     // TODO: validate to prevent empty calls
     this.channel.push("play", {board: this.state.board,
       boardIndPlayed: this.state.boardIndPlayed,
@@ -95,6 +102,7 @@ class GenericScrabble extends React.Component {
     return(
         <div>
           <section className = "board">
+            <h2>{this.state.message}</h2>
             <table>
               <tbody>{this.getTable()}</tbody>
             </table>
@@ -106,6 +114,16 @@ class GenericScrabble extends React.Component {
               onClick ={this.handlePlayClick.bind(this)}>Play</button>
             <button className = "clearButton"
               onClick ={this.handleClearClick.bind(this)}>Clear</button>
+          </section>
+          // TODO: make score comp
+          <section className = "score">
+            <h3>Score:</h3>
+            <span><h4>Player 1: {this.state.score1}</h4></span>
+            <span><h4>Player 2: {this.state.score2}</h4></span>
+          </section>
+          <section>
+            <h3>Words Played:</h3>
+            <h4>{this.state.words}</h4>
           </section>
         </div>
     );
@@ -136,6 +154,14 @@ class GenericScrabble extends React.Component {
     this.setState(view.game);
   }
 
+
+  onUpdate({game}){
+    console.log("On update")
+    console.log("new game", game)
+    this.setState(game);
+  }
+
+
   // Ref: https://stackoverflow.com/questions/22876978/loop-inside-react-jsx
   getTable()
   {
@@ -155,6 +181,17 @@ class GenericScrabble extends React.Component {
     return trs;
   }
 
+  getMessage()
+  {
+    var msg = this.state.message;
+    var msgDisplay = [];
+    if(msg != "")
+    {
+      msgDisplay.push(<p>{msg}</p>);
+    }
+    return msgDisplay;
+  }
+
   displayState()
   {
     console.log(this.state);
@@ -170,7 +207,7 @@ function Rack(props)
   let trs = [];
   let tds = [];
 
-  console.log(rackIndPlayed);
+
 
   for(let i = 0; i < 7; i++)
   {
