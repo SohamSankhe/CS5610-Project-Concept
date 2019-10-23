@@ -42,11 +42,12 @@ defmodule Scrabble.Game do
 	# restricted client view
 	# board will be a list [0-224] converted from (x,y) grid maintained on the
 	# server side
-	def client_view(game) do
+	def client_view(game, player) do
+	    client_game =
 		%{
 			board: Grid.getClientBoard(game.board),
 			color: game.colorList,
-            rack: game.rack,
+            rack: [],
 
 			# Below added just for consistency betw server & client state (needed?)
 			currentRackIndex: -1,
@@ -59,6 +60,7 @@ defmodule Scrabble.Game do
 			lastScore1: game.lastScore1,
 			lastScore2: game.lastScore2,
 		}
+        |> Map.put(:rack, check_player(game, player))
 	end
 
 	def play(game, board, boardIndPlayed, rackIndPlayed) do
@@ -78,7 +80,7 @@ defmodule Scrabble.Game do
 		true
 	end
 
-    def check_player(player, game) do
+    def check_player(game, player) do
       if player == "player1" do
         rack = game.rack1
       else

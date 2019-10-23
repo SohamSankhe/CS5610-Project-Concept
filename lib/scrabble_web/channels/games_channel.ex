@@ -13,24 +13,21 @@ defmodule ScrabbleWeb.GamesChannel do
 
   def join("games:" <> name_player, payload, socket) do
     if authorized?(payload) do
+      # get name and player from subtopic
       name_player = String.split(name_player, ",")
       name = List.first(name_player)
       IO.inspect(name)
       player = List.last(name_player)
       IO.inspect(player)
-      game = BackupAgent.get(name)|| Game.new()
-      BackupAgent.put(name, game)
-      rack = Game.check_player(player, game)
-      game = game
-      |> Map.delete(:rack1)
-      |> Map.delete(:rack2)
-      |> Map.put_new(:rack, rack)
+      # start GameServer
+      GameServer.start(name)
+      # get server side game state
+      game = GameServer.peek(name)
+      # push name and player into socket
       socket = socket
-      |> assign(:rack, rack)
       |> assign(:player, player)
       |> assign(:name, name)
-      GameServer.start(name)
-      {:ok, %{"join" => name, "game" => Game.client_view(game)}, socket}
+      {:ok, %{"join" => name, "game" => Game.client_view(game, player)}, socket}
     else
       {:error, %{reason: "unauthorized"}}
     end
@@ -50,10 +47,18 @@ defmodule ScrabbleWeb.GamesChannel do
 
   def handle_in("play", %{"board" => brd, "boardIndPlayed" => brdInd, "rackIndPlayed" => rckInd}, socket) do
     name = socket.assigns[:name]
-    game = Game.play(socket.assigns[:game], brd, brdInd, rckInd)
-    socket = assign(socket, :game, game)
-    BackupAgent.put(name, game)
-    {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
+    player = socket.assigns[:player]
+    game = GameServer.play(name, brd, brdInd, rckInd)
+    # broadcast the new game state to other clients in the same channel
+    if game.message == "" do
+        if player == "player1" do
+          IO.inspect("broadcast!")
+          broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
+        else
+          broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
+        end
+    end
+    {:reply, {:ok, %{ "game" => Game.client_view(game, player)}}, socket}
   end
 
 end

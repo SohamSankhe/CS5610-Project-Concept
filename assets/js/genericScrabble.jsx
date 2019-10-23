@@ -29,6 +29,8 @@ class GenericScrabble extends React.Component {
     this.channel.join()
         .receive("ok", this.onJoin.bind(this))
 		    .receive("error", resp => { console.log("Unable to join", resp); });
+
+    this.channel.on("update", this.onJoin.bind(this));
   }
 
   // Event handlers
@@ -36,8 +38,7 @@ class GenericScrabble extends React.Component {
   handleBoardClick(ev) // handle square comp click
   {
     var ind = ev.target.value;
-    console.log("Sq Index", ind, " Sq Value",
-      this.state.board[ind]);
+    console.log("Sq Index", ind, " Sq Value", this.state.board[ind]);
 
     if(this.state.board[ind] != "") {
       return; // value already exists - ignore

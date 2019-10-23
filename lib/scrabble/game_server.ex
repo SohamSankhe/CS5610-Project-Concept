@@ -17,14 +17,32 @@ defmodule Scrabble.GameServer do
 
   def start_link(name) do
     game = Scrabble.BackupAgent.get(name) || Scrabble.Game.new()
-    |> Map.delete(:rack1)
-    |> Map.delete(:rack2)
+    # push server side game state into BackupAgent
+    Scrabble.BackupAgent.put(name, game)
     GenServer.start_link(__MODULE__, game, name: reg(name))
   end
 
+  def play(name, board, boardIndPlayed, rackIndPlayed) do
+    GenServer.call(reg(name), {:play, name, board, boardIndPlayed, rackIndPlayed})
+  end
+
+  def peek(name) do
+    GenServer.call(reg(name), {:peek, name})
+  end
 
   def init(game) do
     {:ok, game}
   end
+
+  def handle_call({:play, name, board, boardIndPlayed, rackIndPlayed}, _from, game) do
+    game = Scrabble.Game.play(game, board, boardIndPlayed, rackIndPlayed)
+    Scrabble.BackupAgent.put(name, game)
+    {:reply, game, game}
+  end
+
+  def handle_call({:peek, _name}, _form, game) do
+    {:reply, game, game}
+  end
+
 
 end

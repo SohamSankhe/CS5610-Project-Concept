@@ -18,7 +18,6 @@ defmodule Scrabble.Play do
     if valStatus == :ok do
     # Identify words updated/created
       wordCoords = Words.findWords(updatedBoard, brdIndexes)
-
       # check correctness of words
       {_, words, incorrectWords} = Words.checkWords(updatedBoard, wordCoords)
       cond do

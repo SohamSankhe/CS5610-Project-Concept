@@ -5,7 +5,7 @@ defmodule Scrabble.ValidatePlay do
     cond do
       status == :error -> {:error, dir}
       !isPlacementValid(game, board, boardIndPlayed, dir) ->
-        {:error, "Word played must be connected to atleast one other word"}
+        {:error, "Word played must be connected to at least one other word"}
       # consecutive condition
       true -> {:ok, ""}
     end
