@@ -12,33 +12,37 @@ class GenericScrabble extends React.Component {
     this.channel = props.channel;
 
     this.state = {
-    	board: [],
+      board: [],
       color: [],
-      rack1: [],
-      rack2: [],
+      rack: [],
       currentRackIndex: -1,
       rackIndPlayed: [],
       boardIndPlayed: [],
       message: "",
       words: [],
       score1: 0,
-			score2: 0,
-			lastScore1: 0,
-			lastScore2: 0
+      score2: 0,
+      lastScore1: 0,
+      lastScore2: 0,
+      whosturn: "player1"
     };
 
     this.channel.join()
         .receive("ok", this.onJoin.bind(this))
 		    .receive("error", resp => { console.log("Unable to join", resp); });
+
+    this.channel.on("update", this.onJoin.bind(this));
   }
 
   // Event handlers
 
   handleBoardClick(ev) // handle square comp click
   {
+    if (this.state.whosturn != window.player){
+      return;
+    }
     var ind = ev.target.value;
-    console.log("Sq Index", ind, " Sq Value",
-      this.state.board[ind]);
+    console.log("Sq Index", ind, " Sq Value", this.state.board[ind]);
 
     if(this.state.board[ind] != "") {
       return; // value already exists - ignore
@@ -47,7 +51,7 @@ class GenericScrabble extends React.Component {
       return; // nothing selected
     }
 
-    var rackValue = this.state.rack1[this.state.currentRackIndex];
+    var rackValue = this.state.rack[this.state.currentRackIndex];
     var newRackIndPlayedList = this.state.rackIndPlayed.slice();
     newRackIndPlayedList.push(this.state.currentRackIndex);
     var newBoardIndPlayedList = this.state.boardIndPlayed.slice();
@@ -65,9 +69,12 @@ class GenericScrabble extends React.Component {
 
   handleRackClick(ev)
   {
+    if (this.state.whosturn != window.player){
+      return;
+    }
     var ind = ev.target.value;
     console.log("Rack Index ", ind, " Value: ",
-      this.state.rack1[ind]);
+      this.state.rack[ind]);
     if(this.state.rackIndPlayed.includes(ind.toString()))
     {
       return; // already played
@@ -77,7 +84,11 @@ class GenericScrabble extends React.Component {
 
   handlePlayClick()
   {
+    if (this.state.whosturn != window.player){
+      return;
+    }
     console.log("Player chooses to play");
+    this.displayState();
     // TODO: validate to prevent empty calls
     this.channel.push("play", {board: this.state.board,
       boardIndPlayed: this.state.boardIndPlayed,
@@ -87,6 +98,9 @@ class GenericScrabble extends React.Component {
 
   handleClearClick()
   {
+    if (this.state.whosturn != window.player){
+      return;
+    }
     console.log("Player chooses to clear");
 
     this.setState(oldState => ({
@@ -102,6 +116,7 @@ class GenericScrabble extends React.Component {
     return(
         <div>
           <section className = "board">
+            <h2>Current Round: {this.state.whosturn}</h2>
             <h2>{this.state.message}</h2>
             <table>
               <tbody>{this.getTable()}</tbody>
@@ -109,7 +124,7 @@ class GenericScrabble extends React.Component {
           </section>
           <section className="racks">
           <h4>Player racks</h4>
-            {this.getRack(1)}
+            {this.getRack()}
             <button className = "playButton"
               onClick ={this.handlePlayClick.bind(this)}>Play</button>
             <button className = "clearButton"
@@ -122,8 +137,8 @@ class GenericScrabble extends React.Component {
             <span><h4>Player 2: {this.state.score2}</h4></span>
           </section>
           <section>
-          <h3>Words Played:</h3>
-          <h4>{this.state.words}</h4>
+            <h3>Words Played:</h3>
+            <h4>{this.state.words}</h4>
           </section>
         </div>
     );
@@ -139,26 +154,14 @@ class GenericScrabble extends React.Component {
     );
   }
 
-  getRack(i)
+  getRack()
   {
-    if(i == 1) // player 1 rack
-    {
-      return(
-        <Rack letters={this.state.rack1}  //Todo : add play and clear buttons
-          onClick = {this.handleRackClick.bind(this)}
-          currentRackIndex = {this.state.currentRackIndex}
-          rackIndPlayed = {this.state.rackIndPlayed}/>
-      );
-    }
-    else // player 2 rack
-    {
-      return(
-        <Rack letters = {this.state.rack2}
-          onClick = {this.handleRackClick.bind(this)}
-          currentRackIndex = {this.state.currentRackIndex}
-          rackIndPlayed = {this.state.rackIndPlayed}/>
-      );
-    }
+    return(
+        <Rack letters={this.state.rack}  //Todo : add play and clear buttons
+              onClick = {this.handleRackClick.bind(this)}
+              currentRackIndex = {this.state.currentRackIndex}
+              rackIndPlayed = {this.state.rackIndPlayed}/>
+    );
   }
 
   onJoin(view) {
@@ -166,11 +169,13 @@ class GenericScrabble extends React.Component {
     this.setState(view.game);
   }
 
+
   onUpdate({game}){
     console.log("On update")
     console.log("new game", game)
     this.setState(game);
   }
+
 
   // Ref: https://stackoverflow.com/questions/22876978/loop-inside-react-jsx
   getTable()
@@ -193,8 +198,8 @@ class GenericScrabble extends React.Component {
 
   getMessage()
   {
-    msg = this.state.message;
-    msgDisplay = [];
+    var msg = this.state.message;
+    var msgDisplay = [];
     if(msg != "")
     {
       msgDisplay.push(<p>{msg}</p>);
@@ -216,6 +221,7 @@ function Rack(props)
   let tbl = [];
   let trs = [];
   let tds = [];
+
 
   for(let i = 0; i < 7; i++)
   {

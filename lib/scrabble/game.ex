@@ -33,6 +33,7 @@ defmodule Scrabble.Game do
 			score2: 0,
 			lastScore1: 0,
 			lastScore2: 0,
+			whosturn: "player1",
 			# Below added just for consistency betw server & client state (needed?)
 			# currentRackIndex: -1,
 			# indexesPlayed: [],
@@ -42,15 +43,16 @@ defmodule Scrabble.Game do
 	# restricted client view
 	# board will be a list [0-224] converted from (x,y) grid maintained on the
 	# server side
-	def client_view(game) do
+	def client_view(game, player) do
+	    client_game =
 		%{
 			board: Grid.getClientBoard(game.board),
 			color: game.colorList,
-			rack1: game.rack1,
-			rack2: game.rack2, # TODO cant send both racks to one client
+            rack: [],
 
 			# Below added just for consistency betw server & client state (needed?)
 			currentRackIndex: -1,
+
       rackIndPlayed: [],
       boardIndPlayed: [],
 			message: game.message,
@@ -59,10 +61,15 @@ defmodule Scrabble.Game do
 			score2: game.score2,
 			lastScore1: game.lastScore1,
 			lastScore2: game.lastScore2,
+			whosturn: game.whosturn
+
 		}
+        |> Map.put(:rack, check_player(game, player))
 	end
 
 	def play(game, board, boardIndPlayed, rackIndPlayed) do
+
+		game
 		IO.inspect game # game.board is the original board
 		IO.inspect board # updated board
 		IO.inspect boardIndPlayed
@@ -71,7 +78,7 @@ defmodule Scrabble.Game do
 		IO.puts("New game")
 		IO.inspect(newGame)
 		newGame
-		#game
+
 	end
 
 	# Todo - Delete method and replace with something appr
@@ -79,5 +86,12 @@ defmodule Scrabble.Game do
 		true
 	end
 
+    def check_player(game, player) do
+      if player == "player1" do
+        rack = game.rack1
+      else
+        rack = game.rack2
+      end
+    end
 
 end

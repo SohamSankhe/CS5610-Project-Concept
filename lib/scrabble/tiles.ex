@@ -46,6 +46,8 @@ defmodule Scrabble.Tiles do
     end
   end
 
+
+
   def getPointsForLetter(letter) do
     @pointsTable[letter]
   end

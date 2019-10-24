@@ -5,8 +5,8 @@ defmodule ScrabbleWeb.PageController do
     render(conn, "index.html")
   end
 
-  def game(conn, %{"name" => name}) do
-    render conn, "game.html", name: name
+  def game(conn, %{"name" => name, "player" => player}) do
+    render conn, "game.html", name: name, player: player
   end
   
   def redirectToGame(conn, %{"x" => x}) do

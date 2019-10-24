@@ -18,4 +18,10 @@ defmodule Scrabble.BackupAgent do
       Map.get(state, name)
     end
   end
+
+  def get_keys do
+    Agent.get __MODULE__, fn state ->
+          Map.keys(state)
+    end
+  end
 end

@@ -44,3 +44,8 @@ p {
   height: 50px;
   font-size: 20px;
 }
+
+
+#name_input{
+    border: 1px solid black;
+}

@@ -20,12 +20,13 @@ defmodule DictionaryApi do
           acc ++ [word]
         end
     end)
-    
+
+
     if incorrectWords == nil do
       []
     else
       incorrectWords
     end
   end
-
+  
 end

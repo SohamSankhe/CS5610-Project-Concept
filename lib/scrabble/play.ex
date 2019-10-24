@@ -8,25 +8,27 @@ defmodule Scrabble.Play do
   def processPlay(game, board, boardIndPlayed, rackIndPlayed) do
     # 'board' arg contains board with the latest play on it
 
-    # convert client's single index input values to x,y coord system
+
+	# convert client's single index input values to x,y coord system
     updatedBoard = convertGridCoords(board)
     brdIndexes = Enum.map(boardIndPlayed, fn x -> convertToXY(getInt(x)) end)
-
     # Validate input
     {valStatus, valMsg} = ValidatePlay.isPlayValid(game, updatedBoard, brdIndexes)
 
+
     if valStatus == :ok do
-      # Identify words updated/created
+    # Identify words updated/created
       wordCoords = Words.findWords(updatedBoard, brdIndexes)
 
       # check correctness of words
       {_, words, incorrectWords} = Words.checkWords(updatedBoard, wordCoords)
       cond do
         length(incorrectWords) > 0 ->
-            handleIncorrectWordPlay(game, incorrectWords)
+
+          handleIncorrectWordPlay(game, incorrectWords)
         true ->
-            handleCorrectWordPlay(game, updatedBoard, rackIndPlayed, brdIndexes,
-                words, wordCoords)
+          handleCorrectWordPlay(game, updatedBoard, rackIndPlayed, brdIndexes, words, wordCoords)
+
       end
     else
       game = Map.put(game, :message, valMsg)
@@ -37,21 +39,33 @@ defmodule Scrabble.Play do
   def handleCorrectWordPlay(game, updatedBoard, rackIndPlayed, boardIndPlayed,
         words, wordCoords) do
 
+
+    whosTurn = check_whosturn(game)
+
     # score game updatedboard boardindplayed wordCoords
     #score = Score.calculateScore(game, updatedBoard, boardIndPlayed, wordCoords)
-    score = 0
+    score = 1
+    playerRack = if whosTurn == "player2", do: game.rack1, else: game.rack2
 
-    # TODO Yijia - code to decide which rack and which score to be updated based
-    # on player
-    {remainingTiles, newRack} = updateRack(game, game.rack1, rackIndPlayed)
+    {remainingTiles, newRack} = updateRack(game, playerRack, rackIndPlayed)
 
-    game = Map.put(game, :rack1, newRack)
+    game = Map.put(game, :whosturn, whosTurn)
+
+    game = Map.put(game,
+      :rack1, (if (whosTurn == "player2"), do: newRack, else: game.rack1))
+    game = Map.put(game,
+      :score1,(if (whosTurn == "player2"), do: game.score1 + score, else: game.score1))
+    game = Map.put(game, :lastScore1, score)
+
+    game = Map.put(game,
+      :rack2, (if (whosTurn == "player1"), do: newRack, else: game.rack2))
+    game = Map.put(game,
+      :score2,(if (whosTurn == "player1"), do: game.score2 + score, else: game.score2))
+    game = Map.put(game, :lastScore2, score)
     game = Map.put(game, :tiles, remainingTiles)
     game = Map.put(game, :board, updatedBoard)
     game = Map.put(game, :words, words)
     game = Map.put(game, :message, "")
-    game = Map.put(game, :lastScore1, score)
-    game = Map.put(game, :score1, game.score1 + score)
     game
   end
 
@@ -101,8 +115,19 @@ defmodule Scrabble.Play do
     {yCoord, xCoord}
   end
 
+
   def getInt(str) do
     {intVal, ""} = Integer.parse(str)
     intVal
   end
+
+  def check_whosturn(game) do
+    if game.whosturn == "player1" do
+      "player2"
+    else
+      "player1"
+    end
+  end
+
+
 end

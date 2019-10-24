@@ -1,28 +1,7 @@
 defmodule ScrabbleWeb.GamesChannel do
   use ScrabbleWeb, :channel
 
-  #def join("games:lobby", payload, socket) do
-  #  if authorized?(payload) do
-  #    {:ok, socket}
-  #  else
-  #    {:error, %{reason: "unauthorized"}}
-  #  end
-  #end
 
-  # Channels can be used in a request/response fashion
-  # by sending replies to requests from the client
-  #def handle_in("ping", payload, socket) do
-  #  {:reply, {:ok, payload}, socket}
-  #end
-
-  # It is also common to receive messages from the client and
-  # broadcast to everyone in the current topic (games:lobby).
-  #def handle_in("shout", payload, socket) do
-  #  broadcast socket, "shout", payload
-  #  {:noreply, socket}
-  #end
-
-  # Add authorization logic here as required.
   defp authorized?(_payload) do
     true
   end
@@ -30,21 +9,26 @@ defmodule ScrabbleWeb.GamesChannel do
   # Todo Ref: Hangman example in class
   alias Scrabble.Game
   alias Scrabble.BackupAgent
+  alias Scrabble.GameServer
 
-  def join("games:" <> name, payload, socket) do
-    if authorized?(payload) do
-      game = BackupAgent.get(name) || Game.new()
+  def join("games:" <> name, %{"player" => player}, socket) do
+    if authorized?(%{}) do
+      IO.inspect(name)
+      IO.inspect(player)
+      # start GameServer
+      GameServer.start(name)
+      # get server side game state
+      game = GameServer.peek(name)
+      # push name and player into socket
       socket = socket
-      |> assign(:game, game)
+      |> assign(:player, player)
       |> assign(:name, name)
-      BackupAgent.put(name, game)
-      {:ok, %{"join" => name, "game" => Game.client_view(game)}, socket}
+      {:ok, %{"join" => name, "game" => Game.client_view(game, player)}, socket}
     else
       {:error, %{reason: "unauthorized"}}
     end
   end
 
-  # TODO remove
   def handle_in("guess", %{"letter" => ll}, socket) do
   	name = socket.assigns[:name]
   	{index, ""} = Integer.parse(ll)
@@ -56,10 +40,18 @@ defmodule ScrabbleWeb.GamesChannel do
 
   def handle_in("play", %{"board" => brd, "boardIndPlayed" => brdInd, "rackIndPlayed" => rckInd}, socket) do
     name = socket.assigns[:name]
-    game = Game.play(socket.assigns[:game], brd, brdInd, rckInd)
-    socket = assign(socket, :game, game)
-    BackupAgent.put(name, game)
-    {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
+    player = socket.assigns[:player]
+    game = GameServer.play(name, brd, brdInd, rckInd)
+    # broadcast the new game state to other clients in the same channel
+    if game.message == "" do
+        if player == "player1" do
+          IO.inspect("broadcast!")
+          broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
+        else
+          broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
+        end
+    end
+    {:reply, {:ok, %{ "game" => Game.client_view(game, player)}}, socket}
   end
 
 end
