@@ -29,12 +29,16 @@ defmodule Scrabble.Words do
     xWordList = Enum.reduce(xWordList, [], fn word, acc ->
                   if length(word) > 1 do
                     acc ++ [word]
+                  else
+                    acc
                   end
                 end)
 
     yWordList = Enum.reduce(yWordList, [], fn word, acc ->
                   if length(word) > 1 do
                     acc ++ [word]
+                  else
+                    acc
                   end
                 end)
 
@@ -49,6 +53,8 @@ defmodule Scrabble.Words do
       intr = MapSet.intersection(brdIndPlayedSet, MapSet.new(word))
       if MapSet.size(intr) >= 1 do
         acc ++ [word]
+      else
+        acc
       end
     end)
 
