@@ -54,4 +54,62 @@ defmodule ScrabbleWeb.GamesChannel do
     {:reply, {:ok, %{ "game" => Game.client_view(game, player)}}, socket}
   end
 
+  def handle_in("swap", %{"currentRackIndex" => currentRackIndex}, socket) do
+    name = socket.assigns[:name]
+    player = socket.assigns[:player]
+    game = GameServer.swap(name, currentRackIndex)
+    # broadcast the new game state to other clients in the same channel
+    if game.message == "" do
+        if player == "player1" do
+          IO.inspect("broadcast!")
+          broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
+        else
+          broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
+        end
+    end
+    {:reply, {:ok, %{ "game" => Game.client_view(game, player)}}, socket}
+  end
+
+  def handle_in("pass", %{"currentRackIndex" => currentRackIndex}, socket) do
+    name = socket.assigns[:name]
+    player = socket.assigns[:player]
+    game = GameServer.pass(name)
+    # broadcast the new game state to other clients in the same channel
+    if player == "player1" do
+      IO.inspect("broadcast!")
+      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
+    else
+      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
+    end
+    {:reply, {:ok, %{ "game" => Game.client_view(game, player)}}, socket}
+  end
+
+  def handle_in("forfeit", %{"currentRackIndex" => currentRackIndex}, socket) do
+    name = socket.assigns[:name]
+    player = socket.assigns[:player]
+    game = GameServer.forfeit(name)
+    # broadcast the new game state to other clients in the same channel
+    if player == "player1" do
+      IO.inspect("broadcast!")
+      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
+    else
+      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
+    end
+    {:reply, {:ok, %{ "game" => Game.client_view(game, player)}}, socket}
+  end
+
+  def handle_in("playAgain", %{"currentRackIndex" => currentRackIndex}, socket) do
+    name = socket.assigns[:name]
+    player = socket.assigns[:player]
+    game = GameServer.playAgain(name)
+    # broadcast the new game state to other clients in the same channel
+    if player == "player1" do
+      IO.inspect("broadcast!")
+      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
+    else
+      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
+    end
+    {:reply, {:ok, %{ "game" => Game.client_view(game, player)}}, socket}
+  end
+
 end

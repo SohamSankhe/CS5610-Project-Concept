@@ -24,7 +24,8 @@ class GenericScrabble extends React.Component {
       score2: 0,
       lastScore1: 0,
       lastScore2: 0,
-      whosturn: "player1"
+      whosturn: "player1",
+      isActive: true
     };
 
     this.channel.join()
@@ -89,10 +90,25 @@ class GenericScrabble extends React.Component {
     }
     console.log("Player chooses to play");
     this.displayState();
-    // TODO: validate to prevent empty calls
+
     this.channel.push("play", {board: this.state.board,
       boardIndPlayed: this.state.boardIndPlayed,
       rackIndPlayed: this.state.rackIndPlayed})
+  		.receive("ok", this.onUpdate.bind(this))
+  }
+
+  handleSwapClick()
+  {
+    if (this.state.whosturn != window.player){
+      return;
+    }
+    if(this.state.currentRackIndex == -1)
+    {
+      this.setState(oldState => ({message: "Select a tile in the rack to swap"}));
+      return;
+    }
+    console.log("Player chooses to swap a tile");
+    this.channel.push("swap", {currentRackIndex: this.state.currentRackIndex})
   		.receive("ok", this.onUpdate.bind(this))
   }
 
@@ -111,6 +127,33 @@ class GenericScrabble extends React.Component {
     }));
   }
 
+  handlePassClick()
+  {
+    if (this.state.whosturn != window.player){
+      return;
+    }
+    console.log("Player chooses to pass the turn");
+    this.channel.push("pass", {currentRackIndex: this.state.currentRackIndex})
+  		.receive("ok", this.onUpdate.bind(this))
+  }
+
+  handleForfeitClick()
+  {
+    if (this.state.whosturn != window.player){
+      return;
+    }
+    console.log("Player chooses to give up");
+    this.channel.push("forfeit", {currentRackIndex: this.state.currentRackIndex})
+  		.receive("ok", this.onUpdate.bind(this))
+  }
+
+  handleRestartClick()
+  {
+    console.log("Player chooses to playAgain");
+    this.channel.push("playAgain", {currentRackIndex: this.state.currentRackIndex})
+  		.receive("ok", this.onUpdate.bind(this))
+  }
+
   render()
   {
     return(
@@ -118,6 +161,7 @@ class GenericScrabble extends React.Component {
           <section className = "board">
             <h2>Current Round: {this.state.whosturn}</h2>
             <h2>{this.state.message}</h2>
+            {this.getRestart()}
             <table>
               <tbody>{this.getTable()}</tbody>
             </table>
@@ -129,6 +173,12 @@ class GenericScrabble extends React.Component {
               onClick ={this.handlePlayClick.bind(this)}>Play</button>
             <button className = "clearButton"
               onClick ={this.handleClearClick.bind(this)}>Clear</button>
+            <button className = "swapButton"
+              onClick ={this.handleSwapClick.bind(this)}>Swap</button>
+            <button className = "passButton"
+              onClick ={this.handlePassClick.bind(this)}>Pass</button>
+            <button className = "forfeitButton"
+              onClick ={this.handleForfeitClick.bind(this)}>Give up!</button>
           </section>
           // TODO: make score comp
           <section className = "score">
@@ -164,6 +214,14 @@ class GenericScrabble extends React.Component {
     );
   }
 
+  getRestart()
+  {
+    return(
+      <Restart msg = "Play Again" isGameActive = {this.state.isActive}
+        onClick = {this.handleRestartClick.bind(this)}/>
+    );
+  }
+
   onJoin(view) {
     console.log("new view", view);
     this.setState(view.game);
@@ -175,7 +233,6 @@ class GenericScrabble extends React.Component {
     console.log("new game", game)
     this.setState(game);
   }
-
 
   // Ref: https://stackoverflow.com/questions/22876978/loop-inside-react-jsx
   getTable()
@@ -267,6 +324,23 @@ function Square(props)
       {props.letter}
     </button>
   );
+}
+
+function Restart(props)
+{
+  if (!props.isGameActive)
+  {
+      console.log("here 1");
+      return(
+        <button className = "restartButton"
+          onClick = {props.onClick}>
+          {props.msg}
+        </button>
+      );
+  }
+  else {
+    return null;
+  }
 }
 
 

@@ -8,8 +8,7 @@ defmodule Scrabble.Play do
   def processPlay(game, board, boardIndPlayed, rackIndPlayed) do
     # 'board' arg contains board with the latest play on it
 
-
-	# convert client's single index input values to x,y coord system
+	  # convert client's single index input values to x,y coord system
     updatedBoard = convertGridCoords(board)
     brdIndexes = Enum.map(boardIndPlayed, fn x -> convertToXY(getInt(x)) end)
     # Validate input
@@ -36,6 +35,56 @@ defmodule Scrabble.Play do
     end
   end
 
+  def processSwap(game, currentRackIndex) do
+    currentRackIndex = (if (currentRackIndex == nil), do: -1, else: getInt(currentRackIndex))
+    whosTurn = check_whosturn(game)
+    if (currentRackIndex < 0  or currentRackIndex > 6) do
+      game
+    else
+      # change rack of the player
+      playerRack = (if (whosTurn == "player2"), do: game.rack1, else: game.rack2)
+      tileToSwap = Enum.at(playerRack, currentRackIndex)
+      newTileList = Tiles.putTiles(game.tiles, [tileToSwap])
+      {newTileList, newTile} = Tiles.getTiles(newTileList, 1)
+      playerRack = List.delete_at(playerRack, currentRackIndex)
+      playerRack = List.insert_at(playerRack, currentRackIndex, hd(newTile))
+
+      game = Map.put(game, :whosturn, whosTurn)
+      game = Map.put(game,
+        :rack1, (if (whosTurn == "player2"), do: playerRack, else: game.rack1))
+      game = Map.put(game,
+        :rack2, (if (whosTurn == "player1"), do: playerRack, else: game.rack2))
+      game = Map.put(game, :tiles, newTileList)
+      game = Map.put(game, :message, "")
+      game
+    end
+  end
+
+  def processPass(game) do
+    IO.puts("Player chooses to pass his turn")
+    whosTurn = check_whosturn(game)
+    plyrName = (if (whosTurn == "player2"), do: "Player1", else: "Player2")
+    msg = "#{plyrName} chose to pass"
+
+    game = Map.put(game, :whosturn, whosTurn)
+    game = Map.put(game, :message, msg)
+    game
+  end
+
+  def processForfeit(game) do
+    IO.puts("Player chooses to give up")
+    whosTurn = check_whosturn(game)
+    plyrName = (if (whosTurn == "player2"), do: "Player1", else: "Player2")
+    winner = (if (whosTurn == "player2"), do: "Player2", else: "Player1")
+    msg = "#{plyrName} chose to forfeit. #{winner} wins!"
+
+    game = Map.put(game, :whosturn, whosTurn)
+    game = Map.put(game, :message, msg)
+    game = Map.put(game, :isActive, false)
+    game
+  end
+
+
   def handleCorrectWordPlay(game, updatedBoard, rackIndPlayed, boardIndPlayed,
         words, wordCoords) do
 
@@ -43,8 +92,7 @@ defmodule Scrabble.Play do
     whosTurn = check_whosturn(game)
 
     # score game updatedboard boardindplayed wordCoords
-    #score = Score.calculateScore(game, updatedBoard, boardIndPlayed, wordCoords)
-    score = 1
+    score = Score.calculateScore(game, updatedBoard, boardIndPlayed, wordCoords)
     playerRack = if whosTurn == "player2", do: game.rack1, else: game.rack2
 
     {remainingTiles, newRack} = updateRack(game, playerRack, rackIndPlayed)

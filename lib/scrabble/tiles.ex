@@ -46,12 +46,12 @@ defmodule Scrabble.Tiles do
     end
   end
 
-
+  def putTiles(tiles, toPut) do
+    newTileList = tiles ++ toPut
+  end
 
   def getPointsForLetter(letter) do
     @pointsTable[letter]
   end
-
-  # Todo put tiles for swap
 
 end

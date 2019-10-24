@@ -12,7 +12,7 @@ defmodule Scrabble.Score do
     score = Enum.reduce(word, 0, fn {x,y}, acc ->
         acc + calculateScoreForLetter(x,y,board, boardIndPlayed)
       end)
-
+      
     # check for bonus
     newScore = Enum.reduce(word, score, fn {x,y}, acc ->
         cords = {x,y}
@@ -21,10 +21,16 @@ defmodule Scrabble.Score do
         # bonus applies only when premium tile is newly played
         if Enum.member?(boardIndPlayed, cords) do
           cond do
-            bon == "w3" -> score = score * 3
-            bon == "w2" -> score = score * 2
-            true -> score
+            bon == "w3" ->
+              acc = acc * 3
+              acc
+            bon == "w2" ->
+              acc = acc * 2
+              acc
+            true -> acc
           end
+        else
+          acc
         end
       end)
 
@@ -42,19 +48,15 @@ defmodule Scrabble.Score do
     bon = val[:bonus]
 
     # bonus applies only if the premium tile was newly played
-    if Enum.member?(boardIndPlayed, cords) do
-      cond do
-        bon == "l3" -> score = score * 3
-        bon == "l2" -> score = score * 2
-        true -> score
-      end
-    end
-
-    IO.puts("Letter score")
-    IO.puts(val[:letter])
-    IO.puts(val[:bonus])
-    IO.puts(score)
+    score = if Enum.member?(boardIndPlayed, cords) do
+              cond do
+                bon == "l3" -> score * 3
+                bon == "l2" -> score * 2
+                true -> score
+              end
+            else
+              score
+          end
     score
   end
 end
-

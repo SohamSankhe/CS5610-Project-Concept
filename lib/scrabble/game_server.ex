@@ -26,6 +26,22 @@ defmodule Scrabble.GameServer do
     GenServer.call(reg(name), {:play, name, board, boardIndPlayed, rackIndPlayed})
   end
 
+  def swap(name, currentRackIndex) do
+    GenServer.call(reg(name), {:swap, name, currentRackIndex})
+  end
+
+  def pass(name) do
+    GenServer.call(reg(name), {:pass, name})
+  end
+
+  def forfeit(name) do
+    GenServer.call(reg(name), {:forfeit, name})
+  end
+
+  def playAgain(name) do
+    GenServer.call(reg(name), {:playAgain, name})
+  end
+
   def peek(name) do
     GenServer.call(reg(name), {:peek, name})
   end
@@ -36,6 +52,30 @@ defmodule Scrabble.GameServer do
 
   def handle_call({:play, name, board, boardIndPlayed, rackIndPlayed}, _from, game) do
     game = Scrabble.Game.play(game, board, boardIndPlayed, rackIndPlayed)
+    Scrabble.BackupAgent.put(name, game)
+    {:reply, game, game}
+  end
+
+  def handle_call({:swap, name, currentRackIndex}, _from, game) do
+    game = Scrabble.Game.swap(game, currentRackIndex)
+    Scrabble.BackupAgent.put(name, game)
+    {:reply, game, game}
+  end
+
+  def handle_call({:pass, name}, _from, game) do
+    game = Scrabble.Game.pass(game)
+    Scrabble.BackupAgent.put(name, game)
+    {:reply, game, game}
+  end
+
+  def handle_call({:forfeit, name}, _from, game) do
+    game = Scrabble.Game.forfeit(game)
+    Scrabble.BackupAgent.put(name, game)
+    {:reply, game, game}
+  end
+
+  def handle_call({:playAgain, name}, _from, game) do
+    game = Scrabble.Game.playAgain(game)
     Scrabble.BackupAgent.put(name, game)
     {:reply, game, game}
   end

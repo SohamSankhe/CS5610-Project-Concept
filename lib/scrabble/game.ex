@@ -34,6 +34,8 @@ defmodule Scrabble.Game do
 			lastScore1: 0,
 			lastScore2: 0,
 			whosturn: "player1",
+			currentRackIndex: -1,
+			isActive: true,
 			# Below added just for consistency betw server & client state (needed?)
 			# currentRackIndex: -1,
 			# indexesPlayed: [],
@@ -61,7 +63,8 @@ defmodule Scrabble.Game do
 			score2: game.score2,
 			lastScore1: game.lastScore1,
 			lastScore2: game.lastScore2,
-			whosturn: game.whosturn
+			whosturn: game.whosturn,
+			isActive: game.isActive
 
 		}
         |> Map.put(:rack, check_player(game, player))
@@ -73,6 +76,8 @@ defmodule Scrabble.Game do
 		IO.inspect game # game.board is the original board
 		IO.inspect board # updated board
 		IO.inspect boardIndPlayed
+		IO.puts("Tiles remaining")
+		IO.puts(length(game.tiles))
 
 		newGame = Play.processPlay(game, board, boardIndPlayed, rackIndPlayed)
 		IO.puts("New game")
@@ -81,17 +86,29 @@ defmodule Scrabble.Game do
 
 	end
 
-	# Todo - Delete method and replace with something appr
-	def guess(game, letter) do
-		true
+	def swap(game, currentRackIndex) do
+		newGame = Play.processSwap(game, currentRackIndex)
 	end
 
-    def check_player(game, player) do
-      if player == "player1" do
-        rack = game.rack1
-      else
-        rack = game.rack2
-      end
+	def pass(game) do
+		newGame = Play.processPass(game)
+	end
+
+	def forfeit(game) do
+		newGame = Play.processForfeit(game)
+	end
+
+	def playAgain(game) do
+		newGame = new()
+		newGame
+	end
+
+  def check_player(game, player) do
+    if player == "player1" do
+      rack = game.rack1
+    else
+      rack = game.rack2
     end
+  end
 
 end
