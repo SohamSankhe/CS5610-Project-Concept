@@ -23,7 +23,8 @@ class GenericScrabble extends React.Component {
       score1: 0,
       score2: 0,
       lastScore1: 0,
-      lastScore2: 0
+      lastScore2: 0,
+      whosturn: "player1"
     };
 
     this.channel.join()
@@ -37,6 +38,9 @@ class GenericScrabble extends React.Component {
 
   handleBoardClick(ev) // handle square comp click
   {
+    if (this.state.whosturn != window.player){
+      return;
+    }
     var ind = ev.target.value;
     console.log("Sq Index", ind, " Sq Value", this.state.board[ind]);
 
@@ -65,6 +69,9 @@ class GenericScrabble extends React.Component {
 
   handleRackClick(ev)
   {
+    if (this.state.whosturn != window.player){
+      return;
+    }
     var ind = ev.target.value;
     console.log("Rack Index ", ind, " Value: ",
       this.state.rack[ind]);
@@ -77,6 +84,9 @@ class GenericScrabble extends React.Component {
 
   handlePlayClick()
   {
+    if (this.state.whosturn != window.player){
+      return;
+    }
     console.log("Player chooses to play");
     this.displayState();
     // TODO: validate to prevent empty calls
@@ -88,6 +98,9 @@ class GenericScrabble extends React.Component {
 
   handleClearClick()
   {
+    if (this.state.whosturn != window.player){
+      return;
+    }
     console.log("Player chooses to clear");
 
     this.setState(oldState => ({
@@ -103,6 +116,7 @@ class GenericScrabble extends React.Component {
     return(
         <div>
           <section className = "board">
+            <h2>Current Round: {this.state.whosturn}</h2>
             <h2>{this.state.message}</h2>
             <table>
               <tbody>{this.getTable()}</tbody>

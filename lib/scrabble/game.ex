@@ -33,6 +33,7 @@ defmodule Scrabble.Game do
 			score2: 0,
 			lastScore1: 0,
 			lastScore2: 0,
+			whosturn: "player1",
 			# Below added just for consistency betw server & client state (needed?)
 			# currentRackIndex: -1,
 			# indexesPlayed: [],
@@ -59,6 +60,7 @@ defmodule Scrabble.Game do
 			score2: game.score2,
 			lastScore1: game.lastScore1,
 			lastScore2: game.lastScore2,
+			whosturn: game.whosturn
 		}
         |> Map.put(:rack, check_player(game, player))
 	end

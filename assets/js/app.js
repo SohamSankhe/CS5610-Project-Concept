@@ -32,7 +32,7 @@ function start()
 		root = document.getElementById('root'); // React root for game page
 		if (root)
 		{
-			let channel = socket.channel("games:" + window.gameName + "," + window.player, {});
+			let channel = socket.channel("games:" + window.gameName, {player : window.player});
 			scrabble_init(root, channel);
 		}
 	}

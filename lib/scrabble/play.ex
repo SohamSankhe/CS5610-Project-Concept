@@ -42,7 +42,8 @@ defmodule Scrabble.Play do
     # TODO Yijia - code to decide which rack and which score to be updated based
     # on player
     {remainingTiles, newRack} = updateRack(game, game.rack1, rackIndPlayed)
-
+    IO.puts("I am here 0")
+    game = Map.put(game, :whosturn, check_whosturn(game))
     game = Map.put(game, :rack1, newRack)
     game = Map.put(game, :tiles, remainingTiles)
     game = Map.put(game, :board, updatedBoard)
@@ -103,6 +104,14 @@ defmodule Scrabble.Play do
   def getInt(str) do
     {intVal, ""} = Integer.parse(str)
     intVal
+  end
+
+  def check_whosturn(game) do
+    if game.whosturn == "player1" do
+      "player2"
+    else
+      "player1"
+    end
   end
 
 end

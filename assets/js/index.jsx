@@ -18,6 +18,8 @@ class GameIndex extends React.Component {
             .receive("error", resp => {
                 console.log("Unable to join", resp);
             });
+
+        this.channel.on("update", this.onJoin.bind(this));
     }
 
     onJoin(view) {          //Get the existed game through channel and show the game on the index page

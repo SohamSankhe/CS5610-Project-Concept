@@ -11,13 +11,9 @@ defmodule ScrabbleWeb.GamesChannel do
   alias Scrabble.BackupAgent
   alias Scrabble.GameServer
 
-  def join("games:" <> name_player, payload, socket) do
-    if authorized?(payload) do
-      # get name and player from subtopic
-      name_player = String.split(name_player, ",")
-      name = List.first(name_player)
+  def join("games:" <> name, %{"player" => player}, socket) do
+    if authorized?(%{}) do
       IO.inspect(name)
-      player = List.last(name_player)
       IO.inspect(player)
       # start GameServer
       GameServer.start(name)
@@ -32,6 +28,8 @@ defmodule ScrabbleWeb.GamesChannel do
       {:error, %{reason: "unauthorized"}}
     end
   end
+
+
 
 
 
