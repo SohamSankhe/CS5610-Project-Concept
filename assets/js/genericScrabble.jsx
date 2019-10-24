@@ -223,7 +223,6 @@ function Rack(props)
   let tds = [];
 
 
-
   for(let i = 0; i < 7; i++)
   {
     let color = "white";

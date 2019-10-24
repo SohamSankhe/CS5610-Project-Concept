@@ -21,6 +21,7 @@ defmodule DictionaryApi do
         end
     end)
 
+
     if incorrectWords == nil do
       []
     else

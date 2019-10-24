@@ -29,8 +29,10 @@ defmodule Scrabble.Words do
     xWordList = Enum.reduce(xWordList, [], fn word, acc ->
                   if length(word) > 1 do
                     acc ++ [word]
+
                   else
                     acc
+
                   end
                 end)
 
@@ -39,6 +41,7 @@ defmodule Scrabble.Words do
                     acc ++ [word]
                   else
                     acc
+
                   end
                 end)
 
@@ -150,7 +153,6 @@ defmodule Scrabble.Words do
         acc ++ [Enum.reduce(ls, "", fn y, acc -> "#{acc}#{y}" end)]
       end)
   end
-
 
 
   def getLettersForCoordList(lst, board) do

@@ -2,6 +2,7 @@ defmodule Scrabble.ValidatePlay do
 
   def isPlayValid(game, board, boardIndPlayed) do
 
+
     {status, dir} = isDirectionCorrect(boardIndPlayed)
     cond do
       status == :error -> {:error, dir}
@@ -65,10 +66,13 @@ defmodule Scrabble.ValidatePlay do
           acc and isLetter(x,y, board)
         end)
     end
+
   end
 
 
   def isDirectionCorrect(boardIndPlayed) do
+
+
     xSet = Enum.reduce(boardIndPlayed, MapSet.new(), fn {x,_y}, acc ->
               MapSet.put(acc, x)
             end)
@@ -82,6 +86,7 @@ defmodule Scrabble.ValidatePlay do
     end
   end
 
+
   # tests for contiguousness and continousness
   def isPlacementValid(game, board, boardIndPlayed, direction) do
     status = isAdjacent(game, board, boardIndPlayed)
@@ -92,10 +97,12 @@ defmodule Scrabble.ValidatePlay do
       IO.puts("is contigous")
       IO.inspect val
       val
+
     else
       false
     end
   end
+
 
   # implicit check for continousness of the word
   def isAdjacent(game, board, boardIndPlayed) do
@@ -108,6 +115,7 @@ defmodule Scrabble.ValidatePlay do
       end)
     flag
   end
+
 
   # not so implicit check for contiguousness to other words
   def isJoinedToExistingWord(game, board, boardIndPlayed) do
@@ -142,6 +150,7 @@ defmodule Scrabble.ValidatePlay do
       end)
   end
 
+
   # returns 0 if all adjacent are blank
   def areAdjSpotsBlank(x,y, board) do
     # get adjacent board cord
@@ -163,6 +172,7 @@ defmodule Scrabble.ValidatePlay do
      {x-1,y+1},{x-1,y-1}]
   end
 
+
   def getAdjListMinusDiagonals(x,y) do
     [{x+1,y},{x-1,y},
      {x,y+1},{x,y-1}]
@@ -177,5 +187,6 @@ defmodule Scrabble.ValidatePlay do
       true
     end
   end
+
 
 end

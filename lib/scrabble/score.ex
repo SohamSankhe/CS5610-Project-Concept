@@ -57,3 +57,4 @@ defmodule Scrabble.Score do
     score
   end
 end
+

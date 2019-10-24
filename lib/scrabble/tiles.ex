@@ -47,9 +47,11 @@ defmodule Scrabble.Tiles do
   end
 
 
+
   def getPointsForLetter(letter) do
     @pointsTable[letter]
   end
+
   # Todo put tiles for swap
 
 end

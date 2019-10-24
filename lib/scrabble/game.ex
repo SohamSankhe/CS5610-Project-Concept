@@ -52,8 +52,9 @@ defmodule Scrabble.Game do
 
 			# Below added just for consistency betw server & client state (needed?)
 			currentRackIndex: -1,
-            rackIndPlayed: [],
-            boardIndPlayed: [],
+
+      rackIndPlayed: [],
+      boardIndPlayed: [],
 			message: game.message,
 			words: game.words,
 			score1: game.score1,
@@ -61,11 +62,13 @@ defmodule Scrabble.Game do
 			lastScore1: game.lastScore1,
 			lastScore2: game.lastScore2,
 			whosturn: game.whosturn
+
 		}
         |> Map.put(:rack, check_player(game, player))
 	end
 
 	def play(game, board, boardIndPlayed, rackIndPlayed) do
+
 		game
 		IO.inspect game # game.board is the original board
 		IO.inspect board # updated board
@@ -75,6 +78,7 @@ defmodule Scrabble.Game do
 		IO.puts("New game")
 		IO.inspect(newGame)
 		newGame
+
 	end
 
 	# Todo - Delete method and replace with something appr

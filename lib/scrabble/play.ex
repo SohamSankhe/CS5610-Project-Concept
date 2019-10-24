@@ -8,6 +8,7 @@ defmodule Scrabble.Play do
   def processPlay(game, board, boardIndPlayed, rackIndPlayed) do
     # 'board' arg contains board with the latest play on it
 
+
 	# convert client's single index input values to x,y coord system
     updatedBoard = convertGridCoords(board)
     brdIndexes = Enum.map(boardIndPlayed, fn x -> convertToXY(getInt(x)) end)
@@ -18,13 +19,16 @@ defmodule Scrabble.Play do
     if valStatus == :ok do
     # Identify words updated/created
       wordCoords = Words.findWords(updatedBoard, brdIndexes)
+
       # check correctness of words
       {_, words, incorrectWords} = Words.checkWords(updatedBoard, wordCoords)
       cond do
         length(incorrectWords) > 0 ->
+
           handleIncorrectWordPlay(game, incorrectWords)
         true ->
           handleCorrectWordPlay(game, updatedBoard, rackIndPlayed, brdIndexes, words, wordCoords)
+
       end
     else
       game = Map.put(game, :message, valMsg)
@@ -34,6 +38,7 @@ defmodule Scrabble.Play do
 
   def handleCorrectWordPlay(game, updatedBoard, rackIndPlayed, boardIndPlayed,
         words, wordCoords) do
+
 
     whosTurn = check_whosturn(game)
 
@@ -57,12 +62,10 @@ defmodule Scrabble.Play do
     game = Map.put(game,
       :score2,(if (whosTurn == "player1"), do: game.score2 + score, else: game.score2))
     game = Map.put(game, :lastScore2, score)
-
     game = Map.put(game, :tiles, remainingTiles)
     game = Map.put(game, :board, updatedBoard)
     game = Map.put(game, :words, words)
     game = Map.put(game, :message, "")
-
     game
   end
 
@@ -125,5 +128,6 @@ defmodule Scrabble.Play do
       "player1"
     end
   end
+
 
 end
