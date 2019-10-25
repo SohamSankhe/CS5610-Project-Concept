@@ -57,7 +57,8 @@ class GameIndex extends React.Component {
                         <input id = "name_input" type="text"/>
                     </label>
                     <br></br>
-                    <button onClick={this.add_game.bind(this)}>Create</button>
+                    <button className = "createGameButton"
+                    onClick={this.add_game.bind(this)}>Create</button>
                 <GameList game_name = {this.state.game_name}/>
                 </form>
             </div>
