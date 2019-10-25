@@ -25,7 +25,8 @@ class GenericScrabble extends React.Component {
       lastScore1: 0,
       lastScore2: 0,
       whosturn: "player1",
-      isActive: true
+      isActive: true,
+      chatMessage: "",
     };
 
     this.channel.join()
@@ -154,6 +155,23 @@ class GenericScrabble extends React.Component {
   		.receive("ok", this.onUpdate.bind(this))
   }
 
+  handleSubmitClick()
+  {
+    let msg = document.getElementById("user-msg").value;
+    document.getElementById("user-msg").value = "";
+
+    if (msg == ""){
+      return;
+    }
+    msg = window.player+ ": " + msg +"\n";
+    let newChatMessage = this.state.chatMessage.concat(msg);
+    this.setState(oldState => ({
+      chatMessage: oldState.chatMessage.concat(msg)
+    }));
+
+    let msgArray = newChatMessage.split();
+    this.channel.push("chatMessage", {msg: msgArray});
+  }
   render()
   {
     return(
@@ -189,6 +207,17 @@ class GenericScrabble extends React.Component {
           <section>
             <h3>Words Played:</h3>
             <h4>{this.state.words}</h4>
+          </section>
+          <section id = "chat_room">
+            <h2 id = "chat"> Chat Box </h2>
+            <div id = "chat-box">
+              <textarea id = "user-box" value={this.state.chatMessage}></textarea>
+              <br></br>
+            </div>
+            <textarea id = "user-msg" placeholder = "write your comment"></textarea><br></br>
+            <br></br>
+            <button id = "msg-button" type = "submit" onClick={this.handleSubmitClick.bind(this)}>Submit</button>
+
           </section>
         </div>
     );

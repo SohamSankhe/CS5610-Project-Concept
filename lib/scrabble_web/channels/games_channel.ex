@@ -1,7 +1,6 @@
 defmodule ScrabbleWeb.GamesChannel do
   use ScrabbleWeb, :channel
 
-
   defp authorized?(_payload) do
     true
   end
@@ -111,5 +110,22 @@ defmodule ScrabbleWeb.GamesChannel do
     end
     {:reply, {:ok, %{ "game" => Game.client_view(game, player)}}, socket}
   end
+
+  def handle_in("chatMessage", %{"msg" => msg}, socket) do
+    name = socket.assigns[:name]
+    player = socket.assigns[:player]
+    game = GameServer.chatMessage(msg, name)
+    if player == "player1" do
+      IO.inspect("broadcast!")
+      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
+    else
+      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
+    end
+    {:reply, :ok, socket}
+  end
+
+
+
+
 
 end

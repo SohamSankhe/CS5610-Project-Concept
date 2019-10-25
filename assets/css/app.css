@@ -69,3 +69,40 @@ label{
 input{
     margin-top: 20px;
 }
+
+
+#chat{
+    color: hotpink;
+    font-size: 24px;
+    margin-top: 5px;
+    margin-left: 60px;
+}
+
+
+#chat_room{
+    margin-top: 50px;
+    width: 40%;
+    border: 1px solid black;
+    height: 500px;
+
+}
+
+
+#user-box{
+    width: 80%;
+    height: 300px;
+    margin-left: 60px;
+    border: 1px solid black;
+}
+
+#user-msg{
+    width: 50%;
+    height: 50px;
+    margin-left: 60px;
+    margin-top: 15px;
+}
+
+#msg-button{
+    margin-left: 60px;
+    margin-bottom: 20px;
+}

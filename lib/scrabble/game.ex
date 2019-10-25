@@ -36,6 +36,7 @@ defmodule Scrabble.Game do
 			whosturn: "player1",
 			currentRackIndex: -1,
 			isActive: true,
+			chatMessage: [],
 			# Below added just for consistency betw server & client state (needed?)
 			# currentRackIndex: -1,
 			# indexesPlayed: [],
@@ -64,7 +65,8 @@ defmodule Scrabble.Game do
 			lastScore1: game.lastScore1,
 			lastScore2: game.lastScore2,
 			whosturn: game.whosturn,
-			isActive: game.isActive
+			isActive: game.isActive,
+			chatMessage: Enum.join(game.chatMessage)
 
 		}
         |> Map.put(:rack, check_player(game, player))

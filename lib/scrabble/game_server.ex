@@ -42,6 +42,10 @@ defmodule Scrabble.GameServer do
     GenServer.call(reg(name), {:playAgain, name})
   end
 
+  def chatMessage(msg, name) do
+    GenServer.call(reg(name), {:chatMessage, msg, name})
+  end
+
   def peek(name) do
     GenServer.call(reg(name), {:peek, name})
   end
@@ -76,6 +80,12 @@ defmodule Scrabble.GameServer do
 
   def handle_call({:playAgain, name}, _from, game) do
     game = Scrabble.Game.playAgain(game)
+    Scrabble.BackupAgent.put(name, game)
+    {:reply, game, game}
+  end
+
+  def handle_call({:chatMessage, msg, name}, _from, game) do
+    game = Map.put(game, :chatMessage, msg)
     Scrabble.BackupAgent.put(name, game)
     {:reply, game, game}
   end
