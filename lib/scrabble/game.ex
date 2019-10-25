@@ -4,14 +4,13 @@ defmodule Scrabble.Game do
 	alias Scrabble.Tiles
 	alias Scrabble.Play
 
-	# State:
-	# board: Key {x,y} -> {letter, bonus}
-	##  x, y are the coordinates in the grid
-	## 	letter is the letter placed on that spot
-	##  bonus is the special places on the grid where you get extra points
-	# tiles: Key {letter, points} -> remaining count
-	# rack1, rack2, score1, score2, lastScore1, lastScore2
-	# colorList
+	# Reference for new and client_view - Hangman example done in class
+
+	# Server side state:
+	# grid is the scrabble board: %{{x,y} => [letter: letterPlaced, bonus: premium tile]}
+	# rack1, rack2 - racks for player 1 and player 2
+	# tiles - List of letters that are used to fill rack
+	# words - correct words played in the previous round
 
 	def new do
 		grid = Grid.getNewGrid()
@@ -25,7 +24,6 @@ defmodule Scrabble.Game do
 			tiles: tileList,
 			rack1: player1Rack,
 			rack2: player2Rack,
-
 			colorList: clrLst, # for client view, computed once per game
 			message: "",
 			words: [],
@@ -36,9 +34,6 @@ defmodule Scrabble.Game do
 			whosturn: "player1",
 			currentRackIndex: -1,
 			isActive: true,
-			# Below added just for consistency betw server & client state (needed?)
-			# currentRackIndex: -1,
-			# indexesPlayed: [],
 		}
 	end
 
@@ -52,10 +47,8 @@ defmodule Scrabble.Game do
 			color: game.colorList,
             rack: [],
 
-			# Below added just for consistency betw server & client state (needed?)
 			currentRackIndex: -1,
-
-      rackIndPlayed: [],
+			rackIndPlayed: [],
       boardIndPlayed: [],
 			message: game.message,
 			words: game.words,
@@ -71,19 +64,7 @@ defmodule Scrabble.Game do
 	end
 
 	def play(game, board, boardIndPlayed, rackIndPlayed) do
-
-		game
-		IO.inspect game # game.board is the original board
-		IO.inspect board # updated board
-		IO.inspect boardIndPlayed
-		IO.puts("Tiles remaining")
-		IO.puts(length(game.tiles))
-
 		newGame = Play.processPlay(game, board, boardIndPlayed, rackIndPlayed)
-		IO.puts("New game")
-		IO.inspect(newGame)
-		newGame
-
 	end
 
 	def swap(game, currentRackIndex) do

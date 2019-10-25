@@ -27,6 +27,7 @@ class GameIndex extends React.Component {
         this.setState(view);
     }
 
+    // Reference: https://www.w3resource.com/javascript/form/letters-numbers-field.php
     add_game(ev) {          //As clicking the create button, we add a new game. Game name is the one came from the input box.
         let game_name = this.state.game_name;
         let name = document.getElementById("name_input").value; //Get game name from input box
@@ -50,6 +51,7 @@ class GameIndex extends React.Component {
                 {/*Game Name: <input id = "name_input" type="text"></input>*/}
                 {/*<button onClick={this.add_game.bind(this)}>Create</button><br></br>*/}
                 {/*<p>The game name should be alphanumeric</p>*/}
+                <br/><br/>
                 <label>
                     Want to create a new game? (Alphanumeric required)</label><br></br>
                     <label>
@@ -70,7 +72,7 @@ function GameList(params){
     let game_name = params.game_name;
     // Choose to join as player1 or player2 by click the link. Player1 and player2 will be passed to game page and saved in window.player. Window.player can control which rack is shown on the game page by passing it into game channel.
     let listItems = game_name.map((name)=> <tr><td>{name}</td><td><a href = {"/games/".concat(name,"/player1")} >player1</a></td><td><a href = {"/games/".concat(name,"/player2")}>player2</a></td></tr>);
-    return (<table>
+    return (<table className = "index-table">
                 <thead>
                     <tr>
                         <th>Game Name</th>

@@ -6,7 +6,7 @@ defmodule ScrabbleWeb.GamesChannel do
     true
   end
 
-  # Todo Ref: Hangman example in class
+  # Ref: Hangman example in class
   alias Scrabble.Game
   alias Scrabble.BackupAgent
   alias Scrabble.GameServer
@@ -27,15 +27,6 @@ defmodule ScrabbleWeb.GamesChannel do
     else
       {:error, %{reason: "unauthorized"}}
     end
-  end
-
-  def handle_in("guess", %{"letter" => ll}, socket) do
-  	name = socket.assigns[:name]
-  	{index, ""} = Integer.parse(ll)
-    game = Game.guess(socket.assigns[:game], index)
-    socket = assign(socket, :game, game)
-    BackupAgent.put(name, game)
-    {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
   end
 
   def handle_in("play", %{"board" => brd, "boardIndPlayed" => brdInd, "rackIndPlayed" => rckInd}, socket) do

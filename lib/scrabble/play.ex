@@ -103,23 +103,39 @@ defmodule Scrabble.Play do
       :rack1, (if (whosTurn == "player2"), do: newRack, else: game.rack1))
     game = Map.put(game,
       :score1,(if (whosTurn == "player2"), do: game.score1 + score, else: game.score1))
-    game = Map.put(game, :lastScore1, score)
+    game = Map.put(game,
+      :lastScore1,(if (whosTurn == "player2"), do: score, else: 0))
 
     game = Map.put(game,
       :rack2, (if (whosTurn == "player1"), do: newRack, else: game.rack2))
     game = Map.put(game,
       :score2,(if (whosTurn == "player1"), do: game.score2 + score, else: game.score2))
-    game = Map.put(game, :lastScore2, score)
+    game = Map.put(game,
+      :lastScore2,(if (whosTurn == "player1"), do: score, else: 0))
+
     game = Map.put(game, :tiles, remainingTiles)
     game = Map.put(game, :board, updatedBoard)
     game = Map.put(game, :words, words)
-    game = Map.put(game, :message, "")
+    #game = Map.put(game, :message, "")
+
+    game = cond do
+      length(newRack) == 0 ->
+        msg = cond do
+          game.score1 > game.score2 -> "Player 1 wins"
+          game.score1 < game.score2 -> "Player 2 wins"
+          true -> "It is a tie"
+        end
+        game = Map.put(game, :message, msg)
+        game = Map.put(game, :isActive, false)
+      true -> game = Map.put(game, :message, "")
+    end
+
     game
   end
 
   def handleIncorrectWordPlay(game, incorrectWords) do
     incorrectWordStr = Enum.reduce(incorrectWords, "", fn y, acc -> "#{acc} #{y}" end)
-    msg = "Incorret words: " <> incorrectWordStr
+    msg = "Incorrect word(s): " <> incorrectWordStr
     game = Map.put(game, :message, msg)
     game
   end

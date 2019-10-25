@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import _ from 'lodash';
 
+// Reference for init and join/updates - hangman example done in class
 export default function scrabble_init(root, channel) {
   ReactDOM.render(<GenericScrabble channel = {channel} />, root);
 }
@@ -39,11 +40,10 @@ class GenericScrabble extends React.Component {
 
   handleBoardClick(ev) // handle square comp click
   {
-    if (this.state.whosturn != window.player){
+    if (!this.state.isActive || (this.state.whosturn != window.player)){
       return;
     }
     var ind = ev.target.value;
-    console.log("Sq Index", ind, " Sq Value", this.state.board[ind]);
 
     if(this.state.board[ind] != "") {
       return; // value already exists - ignore
@@ -70,12 +70,10 @@ class GenericScrabble extends React.Component {
 
   handleRackClick(ev)
   {
-    if (this.state.whosturn != window.player){
+    if (!this.state.isActive || (this.state.whosturn != window.player)){
       return;
     }
     var ind = ev.target.value;
-    console.log("Rack Index ", ind, " Value: ",
-      this.state.rack[ind]);
     if(this.state.rackIndPlayed.includes(ind.toString()))
     {
       return; // already played
@@ -85,10 +83,9 @@ class GenericScrabble extends React.Component {
 
   handlePlayClick()
   {
-    if (this.state.whosturn != window.player){
+    if (!this.state.isActive || (this.state.whosturn != window.player)){
       return;
     }
-    console.log("Player chooses to play");
     this.displayState();
 
     this.channel.push("play", {board: this.state.board,
@@ -99,7 +96,7 @@ class GenericScrabble extends React.Component {
 
   handleSwapClick()
   {
-    if (this.state.whosturn != window.player){
+    if (!this.state.isActive || (this.state.whosturn != window.player)){
       return;
     }
     if(this.state.currentRackIndex == -1)
@@ -107,17 +104,15 @@ class GenericScrabble extends React.Component {
       this.setState(oldState => ({message: "Select a tile in the rack to swap"}));
       return;
     }
-    console.log("Player chooses to swap a tile");
     this.channel.push("swap", {currentRackIndex: this.state.currentRackIndex})
   		.receive("ok", this.onUpdate.bind(this))
   }
 
   handleClearClick()
   {
-    if (this.state.whosturn != window.player){
+    if (!this.state.isActive || (this.state.whosturn != window.player)){
       return;
     }
-    console.log("Player chooses to clear");
 
     this.setState(oldState => ({
       board: oldState.board.map((item, index) =>
@@ -129,27 +124,24 @@ class GenericScrabble extends React.Component {
 
   handlePassClick()
   {
-    if (this.state.whosturn != window.player){
+    if (!this.state.isActive || (this.state.whosturn != window.player)){
       return;
     }
-    console.log("Player chooses to pass the turn");
     this.channel.push("pass", {currentRackIndex: this.state.currentRackIndex})
   		.receive("ok", this.onUpdate.bind(this))
   }
 
   handleForfeitClick()
   {
-    if (this.state.whosturn != window.player){
+    if (!this.state.isActive || (this.state.whosturn != window.player)){
       return;
     }
-    console.log("Player chooses to give up");
     this.channel.push("forfeit", {currentRackIndex: this.state.currentRackIndex})
   		.receive("ok", this.onUpdate.bind(this))
   }
 
   handleRestartClick()
   {
-    console.log("Player chooses to playAgain");
     this.channel.push("playAgain", {currentRackIndex: this.state.currentRackIndex})
   		.receive("ok", this.onUpdate.bind(this))
   }
@@ -157,43 +149,70 @@ class GenericScrabble extends React.Component {
   render()
   {
     return(
-        <div>
-          <section className = "board">
-            <h2>Current Round: {this.state.whosturn}</h2>
-            <h2>{this.state.message}</h2>
+      <div>
+          <div className = "message-class">
+            {this.getCurrentRound()}
+            <p>{this.state.message}</p>
             {this.getRestart()}
-            <table>
-              <tbody>{this.getTable()}</tbody>
-            </table>
-          </section>
-          <section className="racks">
-          <h4>Player racks</h4>
-            {this.getRack()}
-            <button className = "playButton"
-              onClick ={this.handlePlayClick.bind(this)}>Play</button>
-            <button className = "clearButton"
-              onClick ={this.handleClearClick.bind(this)}>Clear</button>
-            <button className = "swapButton"
-              onClick ={this.handleSwapClick.bind(this)}>Swap</button>
-            <button className = "passButton"
-              onClick ={this.handlePassClick.bind(this)}>Pass</button>
-            <button className = "forfeitButton"
-              onClick ={this.handleForfeitClick.bind(this)}>Give up!</button>
-          </section>
-          // TODO: make score comp
-          <section className = "score">
-            <h3>Score:</h3>
-            <span><h4>Player 1: {this.state.score1}</h4></span>
-            <span><h4>Player 2: {this.state.score2}</h4></span>
-          </section>
-          <section>
-            <h3>Words Played:</h3>
-            <h4>{this.state.words}</h4>
-          </section>
-        </div>
+          </div>
+           <div className = "row">
+              <div className = "column">
+                <section className = "board">
+                  <table>
+                    <tbody>{this.getTable()}</tbody>
+                  </table>
+                </section>
+              </div>
+              <div className = "column">
+                <section className = "rack">
+                  {this.getRack()}
+                </section>
+                <section className = "actions">
+                  <button className = "playButton"
+                    onClick ={this.handlePlayClick.bind(this)}>Play</button>
+                  <button className = "clearButton"
+                    onClick ={this.handleClearClick.bind(this)}>Clear</button>
+                  <button className = "swapButton"
+                    onClick ={this.handleSwapClick.bind(this)}>Swap</button>
+                  <button className = "passButton"
+                    onClick ={this.handlePassClick.bind(this)}>Pass</button>
+                  &nbsp;&nbsp;
+                  <button className = "forfeitButton"
+                    onClick ={this.handleForfeitClick.bind(this)}>Give up!</button>
+                </section>
+                <section className = "score-section">
+                  <h3>Scores:</h3>
+                  <p>Player 1:</p>
+                  <p>Score: {this.state.score1}, Last Round Score: {this.state.lastScore1} </p>
+                  <p>Player 2:</p>
+                  <p>Score: {this.state.score2}, Last Round Score: {this.state.lastScore2} </p>
+                </section>
+                <br/>
+                <section className="words-played">
+                  <h3>Word(s) Played:</h3>
+                  {this.getWords()}
+                </section>
+              </div>
+          </div>
+      </div>
     );
   }
 
+  getWords()
+  {
+    let wordsPlayed = this.state.words;
+    console.log(wordsPlayed);
+    let wordStr = "";
+    for(let i = 0; i < wordsPlayed.length; i++)
+    {
+      console.log(wordsPlayed[i]);
+      wordStr = wordStr.concat(" ", wordsPlayed[i]);
+    }
+    console.log("words", wordStr);
+    return (<p>{wordStr}</p>);
+  }
+
+  // Reference for Square: React JS tutorial on the official site
   getSquare(i)
   {
     return(
@@ -220,6 +239,16 @@ class GenericScrabble extends React.Component {
       <Restart msg = "Play Again" isGameActive = {this.state.isActive}
         onClick = {this.handleRestartClick.bind(this)}/>
     );
+  }
+
+  getCurrentRound()
+  {
+    if(this.state.isActive)
+    {
+      return (
+        <h2>Current Round: {this.state.whosturn}</h2>
+      );
+    }
   }
 
   onJoin(view) {
@@ -304,7 +333,7 @@ function Rack(props)
       </td>);
   }
   trs.push(<tr>{tds}</tr>);
-  tbl.push(<table><tbody>{trs}</tbody></table>);
+  tbl.push(<table className = "rackTable"><tbody>{trs}</tbody></table>);
   return tbl;
 }
 
@@ -342,8 +371,3 @@ function Restart(props)
     return null;
   }
 }
-
-
-
-// ref - onjoin from hangman
-// ref: https://reactjs.org/tutorial/tutorial.html for Square function

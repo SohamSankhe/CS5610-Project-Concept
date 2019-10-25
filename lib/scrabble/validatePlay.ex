@@ -1,8 +1,13 @@
 defmodule Scrabble.ValidatePlay do
 
+  # checks below conditions:
+  # - first word should be on the center of the board
+  # - words should be placed in either horizontal or vertical direction
+  #   i.e diagonal words are not allowed
+  # - words should be consecutively placed
+  # - words played should be connected to words already placed
+  #   i.e no floating words
   def isPlayValid(game, board, boardIndPlayed) do
-
-
     {status, dir} = isDirectionCorrect(boardIndPlayed)
     cond do
       status == :error -> {:error, dir}
@@ -71,8 +76,6 @@ defmodule Scrabble.ValidatePlay do
 
 
   def isDirectionCorrect(boardIndPlayed) do
-
-
     xSet = Enum.reduce(boardIndPlayed, MapSet.new(), fn {x,_y}, acc ->
               MapSet.put(acc, x)
             end)

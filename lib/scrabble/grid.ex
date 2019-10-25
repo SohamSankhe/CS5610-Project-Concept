@@ -1,9 +1,9 @@
 defmodule Scrabble.Grid do
 
-  # constant lists for each bonus type containing coords where you get bonus
+  # constant lists for each premium tiles
   # word * 3
   @w3 [{0,0},{7,0},{14,0},{0,7},{14,7},{0,14},{7,14},{14,14}]
-  # word * 2
+  # letter * 2
   @l2 [{3,0},{11,0},
        {6,2},{8,2},
        {0,3},{7,3},{14,3},
@@ -18,7 +18,7 @@ defmodule Scrabble.Grid do
        {5,1},{5,5},{5,9},{5,13},
        {9,1},{9,5},{9,9},{9,13},
        {13,5},{13,9}]
-  # letter * 3
+  # word * 3
   @w2 [{1,1},{2,2},{3,3},{4,4},{7,7},{10,10},{11,11},{12,12},{13,13},
        {1,13},{2,12},{3,11},{4,10},{10,4},{11,3},{12,2},{13,1}]
 
@@ -28,7 +28,7 @@ defmodule Scrabble.Grid do
   @l3Color "yellow"
   @l2Color "blue"
 
-  # Ref for colors: http://www.2letterwords.com/Comparing_Boards.html
+  # Ref for color rules: http://www.2letterwords.com/Comparing_Boards.html
 
   # Checks if this is a special grid place
   def getBonus(xCoord, yCoord) do

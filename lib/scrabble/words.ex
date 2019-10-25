@@ -1,6 +1,6 @@
 defmodule Scrabble.Words do
 
-  # return a list of words created/updated due to a play
+  # returns a list of words created/updated due to a play
   # Algo:
   # xs = set of x coordinates from indexes played
   # ys = set of y coordinates from indexes played
@@ -127,6 +127,7 @@ defmodule Scrabble.Words do
 
   # returns {:ok, correctWords}
   #         {:error, incorrectWords}
+  # Uses the DictionaryApi to check if words are valid
   def checkWords(board, wordList) do
     # convert word coord list to actual words
     wordsPlayed = convertToActualWord(board, wordList)
@@ -175,6 +176,4 @@ defmodule Scrabble.Words do
       acc ++ lst
     end)
   end
-
-
 end

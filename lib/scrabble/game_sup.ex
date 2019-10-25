@@ -1,6 +1,8 @@
 defmodule Scrabble.GameSup do
   use DynamicSupervisor
 
+  # Ref - http://www.ccs.neu.edu/home/ntuck/courses/2019/09/cs5610/notes/09-introducing-otp/
+
   def start_link(arg) do
     DynamicSupervisor.start_link(__MODULE__, arg, name: __MODULE__)
   end

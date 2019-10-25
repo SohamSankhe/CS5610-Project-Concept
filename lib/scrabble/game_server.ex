@@ -1,6 +1,8 @@
 defmodule Scrabble.GameServer do
   use GenServer
 
+  # Ref: http://www.ccs.neu.edu/home/ntuck/courses/2019/09/cs5610/notes/09-introducing-otp/
+
   def reg(name) do
     {:via, Registry, {Scrabble.GameReg, name}}
   end
