@@ -1,0 +1,40 @@
+
+Web Dev Spring 2018 Project 1 Status
+
+Answer the following questions:
+
+
+1. What are the names of the members of your team?
+Soham Sankhe, Yijia Hao
+
+2. What's the URL of the github repo with your code for this project?
+https://github.com/SohamSankhe/GenericScrabble.git
+
+
+3. What is the URL(s) that you deployed to?
+http://scrabble.yijiahao94.com/
+
+
+4. Is your app functionality complete? If not, what's missing?
+Yes, we have completed all of our functionalities.
+
+
+5. Is your app properly deployed? If not, what went wrong?
+Yes, our app is completely deployed.
+
+
+6. What parts of the project did each team member work on?
+Soham Sankhe: Game board creation, Game functionalities(Clear, Swap, Pass, Give up), Players' scores, CSS
+
+Yijia Hao: Index Page(show multiple games), Chat Room(Text communication between two players), BackupAgent(Save game status and enable multiple players), solved the issue of different view (The rack of each player is invisible to the other one). 
+
+
+7. Are all your third-party assets appropriately licensed and credited?
+Yes, they are referenced on our readme file.
+
+
+And here's a list of tasks for grading comments. Just leave this here:
+ - Development
+ - Deployment
+ - Submission
+ - Report
