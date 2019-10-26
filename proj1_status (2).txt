@@ -20,17 +20,31 @@ Yes, we have completed all of our functionalities.
 
 
 5. Is your app properly deployed? If not, what went wrong?
-Yes, our app is completely deployed.
+Yes, our app is properly deployed.
 
 
 6. What parts of the project did each team member work on?
-Soham Sankhe: Game board creation, Game functionalities(Clear, Swap, Pass, Give up), Players' scores, CSS
+Soham Sankhe: 
+Game logic:
+- Designing the data structures used for handling data.
+- Game board creation, tiles, player racks
+- Algorithms to find words played
+- Validation of word placements
+- Functionalities for Play, Clear, Swap, Pass, Give up
+- Score calculation
+- React and CSS of the game page
 
-Yijia Hao: Index Page(show multiple games), Chat Room(Text communication between two players), BackupAgent(Save game status and enable multiple players), solved the issue of different view (The rack of each player is invisible to the other one). 
+Yijia Hao: 
+- Dictionary API
+- Index Page(show multiple games) and css
+- Chat Room(Text communication between two players)
+- BackupAgent(Save game status and enable multiple players)
+- Genserver and supervisor
+- Solved the issue of different view (The rack of each player is invisible to the other one).
 
 
 7. Are all your third-party assets appropriately licensed and credited?
-Yes, they are referenced on our readme file.
+Yes. References used are mentioned in the code.
 
 
 And here's a list of tasks for grading comments. Just leave this here:
