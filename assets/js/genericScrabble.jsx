@@ -33,7 +33,7 @@ class GenericScrabble extends React.Component {
         .receive("ok", this.onJoin.bind(this))
 		    .receive("error", resp => { console.log("Unable to join", resp); });
 
-    this.channel.on("update", this.onJoin.bind(this));
+    this.channel.on("update", this.onBroadcast.bind(this));
   }
 
   // Event handlers
@@ -249,6 +249,14 @@ class GenericScrabble extends React.Component {
       <Restart msg = "Play Again" isGameActive = {this.state.isActive}
         onClick = {this.handleRestartClick.bind(this)}/>
     );
+  }
+
+  onBroadcast(view){
+    console.log("broadcast");
+    let newState = view.game;
+    newState.rack = this.state.rack;
+    console.log(newState);
+    this.setState(newState);
   }
 
   onJoin(view) {

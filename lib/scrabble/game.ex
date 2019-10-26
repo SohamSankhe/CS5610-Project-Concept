@@ -72,6 +72,30 @@ defmodule Scrabble.Game do
         |> Map.put(:rack, check_player(game, player))
 	end
 
+	def broadcast_view(game) do
+	  client_game =
+      		%{
+      			board: Grid.getClientBoard(game.board),
+      			color: game.colorList,
+                rack: [],
+
+      			# Below added just for consistency betw server & client state (needed?)
+      			currentRackIndex: -1,
+
+                rackIndPlayed: [],
+                boardIndPlayed: [],
+      			message: game.message,
+      			words: game.words,
+      			score1: game.score1,
+      			score2: game.score2,
+      			lastScore1: game.lastScore1,
+      			lastScore2: game.lastScore2,
+      			whosturn: game.whosturn,
+      			isActive: game.isActive,
+      			chatMessage: Enum.join(game.chatMessage)
+      		}
+    end
+
 	def play(game, board, boardIndPlayed, rackIndPlayed) do
 
 		game
