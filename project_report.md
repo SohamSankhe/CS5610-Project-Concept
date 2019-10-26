@@ -240,7 +240,7 @@ Rule - First word should be placed in the center:
 We simply check if the boardIndPlayed includes {7,7}.
 
 Rule - Words should be horizontally of vertically placed:
-xs = Set of x coordinates from the board indexes played
+xs = Set of x coordinates from the board indexes played<br />
 ys = Set of y coordinates from the board indexes played
 One of these should have length = 1.
 
