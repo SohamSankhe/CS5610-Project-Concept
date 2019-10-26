@@ -213,12 +213,12 @@ Some of the salient game rule implementations are as below:
 #### Find words updated/created on the board:
 When a user adds a word to the board, multiple words can be updated.
 Approach used to find these words is as below:
-xs = Set of x coordinates from the board indexes played
-ys = Set of y coordinates from the board indexes played
+xs = Set of x coordinates from the board indexes played  
+ys = Set of y coordinates from the board indexes played  
 One of these sets has to have just one integer in them as the words can be 
-played in either horizontal or vertical direction.
-For each x in xs, get words along the axis into a word set
-For each y in xs, get words along the axis into a word set
+played in either horizontal or vertical direction.  
+For each x in xs, get words along the axis into a word set  
+For each y in xs, get words along the axis into a word set  
 Remove words from the word set that do not contain any board indexes played in 
 the current round. Those are among the already existing words.
 Whatever remains in the set are words created/updated in the current round.
