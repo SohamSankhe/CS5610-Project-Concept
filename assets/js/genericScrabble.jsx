@@ -26,14 +26,16 @@ class GenericScrabble extends React.Component {
       lastScore1: 0,
       lastScore2: 0,
       whosturn: "player1",
-      isActive: true
+      isActive: true,
+      chatMessage: "",
     };
 
     this.channel.join()
         .receive("ok", this.onJoin.bind(this))
 		    .receive("error", resp => { console.log("Unable to join", resp); });
 
-    this.channel.on("update", this.onJoin.bind(this));
+    //this.channel.on("update", this.onJoin.bind(this));
+    this.channel.on("update", this.onBroadcast.bind(this));
   }
 
   // Event handlers
@@ -146,6 +148,24 @@ class GenericScrabble extends React.Component {
   		.receive("ok", this.onUpdate.bind(this))
   }
 
+  handleSubmitClick()
+  {
+    let msg = document.getElementById("user-msg").value;
+    document.getElementById("user-msg").value = "";
+
+    if (msg == ""){
+      return;
+    }
+    msg = window.player+ ": " + msg +"\n";
+    let newChatMessage = this.state.chatMessage.concat(msg);
+    this.setState(oldState => ({
+      chatMessage: oldState.chatMessage.concat(msg)
+    }));
+
+    let msgArray = newChatMessage.split();
+    this.channel.push("chatMessage", {msg: msgArray});
+  }
+
   render()
   {
     return(
@@ -182,15 +202,20 @@ class GenericScrabble extends React.Component {
                 </section>
                 <section className = "score-section">
                   <h3>Scores:</h3>
-                  <p>Player 1:</p>
-                  <p>Score: {this.state.score1}, Last Round Score: {this.state.lastScore1} </p>
-                  <p>Player 2:</p>
-                  <p>Score: {this.state.score2}, Last Round Score: {this.state.lastScore2} </p>
+                  <p>Player 1: Score - {this.state.score1}, Last Round Score - {this.state.lastScore1} </p>
+                  <p>Player 2: Score - {this.state.score2}, Last Round Score - {this.state.lastScore2} </p>
                 </section>
-                <br/>
                 <section className="words-played">
                   <h3>Word(s) Played:</h3>
-                  {this.getWords()}
+                  <p>{this.getWords()}</p>
+                </section>
+                <section id = "chat_room">
+                  <h2 id = "chat"> Chat Box </h2>
+                  <div id = "chat-box">
+                    <textarea id = "user-box" value={this.state.chatMessage}></textarea>
+                  </div>
+                  <textarea id = "user-msg" placeholder = "Write your comment"></textarea><br></br>
+                  <button id = "msg-button" type = "submit" onClick={this.handleSubmitClick.bind(this)}>Submit</button>
                 </section>
               </div>
           </div>
@@ -208,8 +233,7 @@ class GenericScrabble extends React.Component {
       console.log(wordsPlayed[i]);
       wordStr = wordStr.concat(" ", wordsPlayed[i]);
     }
-    console.log("words", wordStr);
-    return (<p>{wordStr}</p>);
+    return (<span>{wordStr}</span>);
   }
 
   // Reference for Square: React JS tutorial on the official site
@@ -249,6 +273,15 @@ class GenericScrabble extends React.Component {
         <h2>Current Round: {this.state.whosturn}</h2>
       );
     }
+  }
+
+  onBroadcast(view)
+  {
+    console.log("broadcast");
+    let newState = view.game;
+    newState.rack = this.state.rack;
+    console.log(newState);
+    this.setState(newState);
   }
 
   onJoin(view) {

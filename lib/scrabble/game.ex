@@ -34,6 +34,7 @@ defmodule Scrabble.Game do
 			whosturn: "player1",
 			currentRackIndex: -1,
 			isActive: true,
+			chatMessage: [],
 		}
 	end
 
@@ -45,8 +46,7 @@ defmodule Scrabble.Game do
 		%{
 			board: Grid.getClientBoard(game.board),
 			color: game.colorList,
-            rack: [],
-
+      rack: [],
 			currentRackIndex: -1,
 			rackIndPlayed: [],
       boardIndPlayed: [],
@@ -57,10 +57,31 @@ defmodule Scrabble.Game do
 			lastScore1: game.lastScore1,
 			lastScore2: game.lastScore2,
 			whosturn: game.whosturn,
-			isActive: game.isActive
-
+			isActive: game.isActive,
+			chatMessage: Enum.join(game.chatMessage)
 		}
         |> Map.put(:rack, check_player(game, player))
+	end
+
+	def broadcast_view(game) do
+		client_game =
+				%{
+					board: Grid.getClientBoard(game.board),
+					color: game.colorList,
+					rack: [],
+					currentRackIndex: -1,
+					rackIndPlayed: [],
+					boardIndPlayed: [],
+					message: game.message,
+					words: game.words,
+					score1: game.score1,
+					score2: game.score2,
+					lastScore1: game.lastScore1,
+					lastScore2: game.lastScore2,
+					whosturn: game.whosturn,
+					isActive: game.isActive,
+					chatMessage: Enum.join(game.chatMessage)
+				}
 	end
 
 	def play(game, board, boardIndPlayed, rackIndPlayed) do

@@ -35,12 +35,13 @@ defmodule ScrabbleWeb.GamesChannel do
     game = GameServer.play(name, brd, brdInd, rckInd)
     # broadcast the new game state to other clients in the same channel
     if game.message == "" do
-        if player == "player1" do
-          IO.inspect("broadcast!")
-          broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
-        else
-          broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
-        end
+        #if player == "player1" do
+        #  IO.inspect("broadcast!")
+        #  broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
+        #else
+        #  broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
+        #end
+        broadcast!(socket, "update", %{"game" => Game.broadcast_view(game)})
     end
     {:reply, {:ok, %{ "game" => Game.client_view(game, player)}}, socket}
   end
@@ -51,12 +52,13 @@ defmodule ScrabbleWeb.GamesChannel do
     game = GameServer.swap(name, currentRackIndex)
     # broadcast the new game state to other clients in the same channel
     if game.message == "" do
-        if player == "player1" do
-          IO.inspect("broadcast!")
-          broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
-        else
-          broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
-        end
+    #    if player == "player1" do
+    #      IO.inspect("broadcast!")
+    #      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
+    #    else
+    #      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
+    #    end
+      broadcast!(socket, "update", %{"game" => Game.broadcast_view(game)})
     end
     {:reply, {:ok, %{ "game" => Game.client_view(game, player)}}, socket}
   end
@@ -66,12 +68,13 @@ defmodule ScrabbleWeb.GamesChannel do
     player = socket.assigns[:player]
     game = GameServer.pass(name)
     # broadcast the new game state to other clients in the same channel
-    if player == "player1" do
-      IO.inspect("broadcast!")
-      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
-    else
-      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
-    end
+    #if player == "player1" do
+    #  IO.inspect("broadcast!")
+    #  broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
+    #else
+    #  broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
+    #end
+    broadcast!(socket, "update", %{"game" => Game.broadcast_view(game)})
     {:reply, {:ok, %{ "game" => Game.client_view(game, player)}}, socket}
   end
 
@@ -80,12 +83,13 @@ defmodule ScrabbleWeb.GamesChannel do
     player = socket.assigns[:player]
     game = GameServer.forfeit(name)
     # broadcast the new game state to other clients in the same channel
-    if player == "player1" do
-      IO.inspect("broadcast!")
-      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
-    else
-      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
-    end
+    #if player == "player1" do
+    #  IO.inspect("broadcast!")
+    #  broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
+    #else
+    #  broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
+    #end
+    broadcast!(socket, "update", %{"game" => Game.broadcast_view(game)})
     {:reply, {:ok, %{ "game" => Game.client_view(game, player)}}, socket}
   end
 
@@ -94,13 +98,28 @@ defmodule ScrabbleWeb.GamesChannel do
     player = socket.assigns[:player]
     game = GameServer.playAgain(name)
     # broadcast the new game state to other clients in the same channel
-    if player == "player1" do
-      IO.inspect("broadcast!")
-      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
-    else
-      broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
-    end
+    #if player == "player1" do
+    #  IO.inspect("broadcast!")
+    #  broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
+    #else
+    #  broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
+    #end
+    broadcast!(socket, "update", %{"game" => Game.broadcast_view(game)})
     {:reply, {:ok, %{ "game" => Game.client_view(game, player)}}, socket}
+  end
+
+  def handle_in("chatMessage", %{"msg" => msg}, socket) do
+    name = socket.assigns[:name]
+    player = socket.assigns[:player]
+    game = GameServer.chatMessage(msg, name)
+    #if player == "player1" do
+    #  IO.inspect("broadcast!")
+    #  broadcast!(socket, "update", %{"game" => Game.client_view(game, "player2")})
+    #else
+    #  broadcast!(socket, "update", %{"game" => Game.client_view(game, "player1")})
+    #end
+    broadcast!(socket, "update", %{"game" => Game.broadcast_view(game)})
+    {:reply, :ok, socket}
   end
 
 end
